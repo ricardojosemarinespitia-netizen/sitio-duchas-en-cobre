@@ -1,0 +1,1735 @@
+/**
+ * estilo.css — componentes del sitio.
+ *
+ * Ningún valor suelto: todo sale de tokens.css. Si algo necesita un color,
+ * espacio o duración que no exista allí, se agrega allí, no aquí.
+ */
+
+/* ═══════════════════════════════════════════════════════════
+   BASE
+   ═══════════════════════════════════════════════════════════ */
+body {
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--fuente-cuerpo);
+  font-size: var(--paso-0);
+  line-height: var(--interlineado-normal);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;   /* clip y no hidden: hidden rompe todos los position:sticky */
+}
+
+.contenedor {
+  width: min(76rem, 100% - var(--e-5) * 2);
+  margin-inline: auto;
+}
+.contenedor--ancho { width: min(90rem, 100% - var(--e-5) * 2); }
+
+.seccion { padding-block: var(--e-9); }
+
+.seccion__etiqueta {
+  font-size: var(--paso--1);
+  letter-spacing: var(--track-marca);
+  text-transform: uppercase;
+  color: var(--acento);
+  margin-bottom: var(--e-4);
+  padding-left: var(--track-marca);   /* compensa el espacio fantasma del tracking */
+}
+
+.seccion__titulo {
+  font-family: var(--fuente-display);
+  font-size: var(--paso-4);
+  font-weight: 300;
+  line-height: var(--interlineado-apretado);
+  letter-spacing: var(--track-apretado);
+  margin-bottom: var(--e-5);
+}
+
+.seccion__bajada {
+  color: var(--texto-suave);
+  max-width: var(--medida);
+  margin-bottom: var(--e-7);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NAVEGACIÓN
+   ═══════════════════════════════════════════════════════════ */
+.nav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: var(--z-nav);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-4);
+  padding: var(--e-4) var(--e-5);
+  /* Sobre el héroe el fondo es transparente; al bajar aparece el cristal. */
+  background: transparent;
+  transition: background var(--dur-rapido) var(--ease-salida),
+              backdrop-filter var(--dur-rapido) var(--ease-salida);
+}
+/* "Liquid glass": el fondo se deja más transparente pero con blur alto y
+   saturación, para que el color de lo que pasa por detrás se vea vivo a
+   través del cristal; el brillo de luz vive en el filo superior (la sombra
+   interior clara) y el borde de abajo se funde en degradado en vez de ser
+   una raya pareja. Todo CSS puro. */
+.nav.desplazado {
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, #ffffff 9%, transparent),
+      transparent 60%),
+    color-mix(in srgb, var(--fondo) 62%, transparent);
+  backdrop-filter: blur(26px) saturate(1.9);
+  -webkit-backdrop-filter: blur(26px) saturate(1.9);
+  border-bottom: 1px solid transparent;
+  border-image: linear-gradient(90deg,
+    transparent, color-mix(in srgb, var(--borde-fuerte) 85%, transparent) 22%,
+    color-mix(in srgb, var(--borde-fuerte) 85%, transparent) 78%, transparent) 1;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 30%, transparent),
+    0 10px 28px -18px #0b0b0f66;
+}
+
+/* Sobre el héroe la marca flota encima de una foto oscura: con el tema
+   claro fijo, heredar var(--texto) la volvía negro sobre negro. Igual que
+   los enlaces: claro fijo sobre la foto, token del tema al aparecer el
+   cristal. El punto de acento pasa a cobre claro sobre la foto por la
+   misma razón. */
+.nav__marca { display: inline-flex; align-items: center; color: #f4f2ee; }
+.nav__marca .wordmark circle { fill: #dcae7c; }
+.nav.desplazado .nav__marca { color: var(--texto); }
+.nav.desplazado .nav__marca .wordmark circle { fill: var(--acento); }
+
+/* El wordmark hereda currentColor: un solo archivo sirve en tema claro y
+   oscuro, y sobre el héroe se aclara igual que los enlaces. El alto manda
+   (el ancho lo pone el viewBox), porque lo que se compara de un logotipo
+   entre pantallas es su altura, no su caja. */
+.wordmark { height: 1.5rem; width: auto; }
+.nav__marca .wordmark { filter: drop-shadow(0 1px 3px #0b0b0fa6); }
+.nav.desplazado .nav__marca .wordmark { filter: none; }
+
+.nav__enlaces { display: flex; gap: var(--e-3); align-items: center; }
+.nav__enlaces a {
+  /* 44px de alto mínimo: WCAG 2.5.5. El padding lateral da también el ancho. */
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding-inline: var(--e-2);
+  font-size: var(--paso--1);
+  letter-spacing: var(--track-amplio);
+  text-transform: uppercase;
+  text-decoration: none;
+  /* Sobre el héroe la nav flota encima de una foto: el color del tema no sirve
+     porque el fondo no es el fondo del tema. Se fija claro y se devuelve al
+     token en cuanto aparece el cristal. */
+  color: #e8e4dd;
+  text-shadow: 0 1px 3px #0b0b0fa6;
+  transition: color var(--dur-micro) var(--ease-salida);
+}
+.nav__enlaces a:hover { color: #fff; }
+
+.nav.desplazado .nav__enlaces a { color: var(--texto-suave); text-shadow: none; }
+.nav.desplazado .nav__enlaces a:hover { color: var(--texto); }
+
+.nav__menu {
+  display: none;
+  background: none; border: 0; color: inherit; cursor: pointer;
+  width: 2.75rem; height: 2.75rem;      /* 44×44 — mínimo táctil */
+  place-items: center;
+}
+.nav__marca { min-height: 2.75rem; }
+
+@media (max-width: 900px) {
+  .nav__enlaces {
+    position: fixed;
+    inset: 0 0 0 auto;
+    width: min(20rem, 82vw);
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: var(--e-6);
+    padding: var(--e-7);
+    background: var(--fondo-elevado);
+    border-left: 1px solid var(--borde);
+    transform: translateX(100%);
+    transition: transform var(--dur-normal) var(--ease-suave);
+  }
+  .nav__enlaces.abierto { transform: translateX(0); }
+  .nav__enlaces a { font-size: var(--paso-1); }
+  .nav__menu { display: grid; z-index: 1; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HÉROE
+   ═══════════════════════════════════════════════════════════ */
+.heroe {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-end;
+  text-align: left;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.heroe__fondo { position: absolute; inset: 0; z-index: -2; }
+/* <picture> es inline por defecto: un porcentaje de alto en el <img> no
+   resuelve de forma fiable si su padre inmediato no tiene tamaño propio.
+   Por eso el fondo se veía cortado a mitad de página en móvil — la franja
+   gris era el fondo del body asomando bajo la imagen. */
+/* Hijo DIRECTO nada más: `picture` a secas también matearía el <picture
+   class="sello-cobre"> anidado por picture() (vista.js) y lo estiraría al
+   tamaño completo del héroe — bug real que se vio en móvil (el sello
+   ocupaba toda la pantalla) hasta que se acotó con `>`. */
+.heroe__fondo > picture { display: block; width: 100%; height: 100%; }
+.heroe__fondo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* El agua animada (`lluvia.js`). Va DENTRO del fondo, no como hermana: así
+   queda sobre la foto pero por debajo del velo oscuro de `.heroe::after`,
+   que es lo que la integra en la escena en vez de dejarla flotando sobre
+   el degradado. El canvas solo lo crea el JS: sin JS no hay nada que ocultar. */
+.heroe__agua {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Velo: antes era un radial cubriendo el 75% del centro — apagaba la foto
+   entera, que es justo lo contrario de darle protagonismo. Ahora el
+   oscurecimiento vive SOLO donde hace falta para leer el texto (el tercio
+   inferior) y un degradado corto arriba para que la nav flotante no se
+   pierda contra un cielo claro; el resto de la foto queda a su luz real. */
+.heroe::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, #0b0b0f73 0%, transparent 18%),
+    linear-gradient(0deg, #0b0b0fe6 0%, #0b0b0fb3 22%, transparent 52%);
+}
+
+/* Anclado abajo-izquierda: la foto manda arriba, el texto no le tapa el
+   centro. Padding lateral corto en móvil: cada píxel de ancho es un
+   carácter más por línea, y ahí es donde la medida se queda corta. */
+.heroe__contenido {
+  padding: var(--e-8) var(--e-4) var(--e-9);
+  max-width: 42rem;
+  color: #f4f2ee;
+}
+@media (min-width: 640px) { .heroe__contenido { padding-inline: var(--e-6); } }
+
+.heroe__titulo {
+  font-family: var(--fuente-display);
+  font-size: var(--paso-5);
+  font-weight: 300;
+  line-height: var(--interlineado-apretado);
+  letter-spacing: var(--track-apretado);
+  margin-bottom: var(--e-5);
+  text-wrap: balance;
+}
+
+.heroe__bajada {
+  /* En móvil --paso-1 deja solo ~35 caracteres por línea, muy por debajo del
+     mínimo cómodo de 45. Se baja un paso hasta que hay ancho para sostenerlo. */
+  font-size: var(--paso-0);
+  color: #d8d2c8;              /* sobre el velo → 9.4:1 */
+  max-width: var(--medida-estrecha);
+  margin: 0 0 var(--e-6);
+  text-wrap: pretty;
+}
+@media (min-width: 640px) {
+  .heroe__bajada { font-size: var(--paso-1); }
+}
+
+.heroe .acciones { justify-content: flex-start; }
+
+.heroe__flecha {
+  position: absolute;
+  bottom: var(--e-6);
+  left: 50%;
+  translate: -50% 0;
+  color: #d8d2c8;
+  animation: flotar 2s ease-in-out infinite;
+}
+@keyframes flotar { 0%, 100% { translate: -50% 0 } 50% { translate: -50% 8px } }
+
+/* ═══════════════════════════════════════════════════════════
+   PORTADAS DE COLECCIÓN
+   Tres paneles a pantalla casi completa, uno por categoría,
+   como en los sitios hermanos: la foto manda, el texto vive
+   en el tercio inferior y el resto de la imagen queda a su
+   luz real. Cada panel entero es un enlace a su categoría.
+   ═══════════════════════════════════════════════════════════ */
+.portadas { display: grid; }
+
+.portada {
+  position: relative;
+  height: 92svh;
+  min-height: 520px;
+  overflow: hidden;
+  isolation: isolate;
+  display: flex;
+  align-items: flex-end;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* `>` por la misma razón que en `.heroe__fondo`: sin acotar a hijo directo,
+   esta regla también agarra el <picture class="sello-cobre"> anidado y lo
+   estira a pantalla completa (position:absolute;inset:0 sobre TODA la
+   portada). */
+.portada > picture { position: absolute; inset: 0; z-index: -2; }
+.portada img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: var(--foco, 50% 50%);
+}
+
+/* El velo solo donde vive el texto, igual que en el héroe. */
+.portada::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(0deg, #0b0b0fd9 0%, #0b0b0f8c 26%, transparent 55%);
+}
+
+.portada__contenido {
+  padding: var(--e-8) var(--e-6);
+  color: #f4f2ee;
+  display: grid;
+  justify-items: start;
+  gap: var(--e-3);
+  width: min(76rem, 100%);
+  margin-inline: auto;
+}
+
+.portada__etiqueta {
+  font-size: var(--paso--1);
+  letter-spacing: var(--track-marca);
+  text-transform: uppercase;
+  color: #d8d2c8;
+}
+
+.portada__nombre {
+  font-family: var(--fuente-display);
+  font-style: italic;
+  font-size: var(--paso-6);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: var(--track-apretado);
+}
+
+.portada__bajada {
+  color: #d8d2c8;
+  max-width: var(--medida-estrecha);
+}
+
+.portada .boton--fantasma { margin-top: var(--e-3); }
+.portada:hover .boton--fantasma { border-color: var(--acento); background: #ffffff14; }
+
+/* El zoom de las portadas lo maneja `activarFotoFoco()` en app.js: va
+   ligado al scroll (entra con zoom, pleno al centrar el panel, cierra al
+   salir), igual que en el sitio de Felipe. Aquí solo se avisa al compositor
+   de que la transformación va a cambiar. Con "reducir movimiento" el JS no
+   toca nada y la foto se queda quieta en su encuadre del CSS. */
+.portada img { will-change: transform; }
+
+/* ═══════════════════════════════════════════════════════════
+   BOTONES
+   ═══════════════════════════════════════════════════════════ */
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e-2);
+  min-height: 3rem;                 /* 48px — por encima del mínimo táctil de 44 */
+  padding: var(--e-3) var(--e-5);
+  border-radius: var(--radio-completo);
+  border: 1px solid transparent;
+  font-size: var(--paso--1);
+  font-weight: 500;
+  letter-spacing: var(--track-amplio);
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform var(--dur-micro) var(--ease-salida),
+              background-color var(--dur-rapido) var(--ease-salida),
+              border-color var(--dur-rapido) var(--ease-salida);
+}
+.boton:active { transform: scale(0.97); }
+.boton--principal { background: var(--acento); color: var(--sobre-acento); }
+.boton--principal:hover { background: var(--acento-vivo); }
+.boton--fantasma { border-color: #ffffff59; color: #f4f2ee; }
+.boton--fantasma:hover { border-color: var(--acento); background: #ffffff14; }
+
+/* Botón inerte: se ve completo, para que el cliente vea el sitio terminado,
+   pero no hace nada porque el dato que necesitaría todavía es de ejemplo.
+   No se le baja la opacidad — eso arruinaría el contraste sin explicar nada;
+   lo que explica es el contorno ámbar y el rótulo que va debajo. */
+.boton--inerte {
+  outline: 2px dashed var(--alerta);
+  outline-offset: 3px;
+  cursor: not-allowed;
+}
+.boton--inerte:active { transform: none; }
+
+.acciones { display: flex; gap: var(--e-3); justify-content: center; flex-wrap: wrap; }
+
+/* ═══════════════════════════════════════════════════════════
+   CATÁLOGO
+   ═══════════════════════════════════════════════════════════ */
+.categoria { margin-bottom: var(--e-9); scroll-margin-top: 6rem; }
+
+.categoria__cabecera {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--e-4);
+  flex-wrap: wrap;
+  padding-bottom: var(--e-4);
+  margin-bottom: var(--e-6);
+  border-bottom: 1px solid var(--borde);
+}
+.categoria__nombre {
+  font-family: var(--fuente-display);
+  font-size: var(--paso-3);
+  font-weight: 300;
+  letter-spacing: var(--track-apretado);
+}
+.categoria__conteo { font-size: var(--paso--1); color: var(--texto-suave); }
+
+.rejilla {
+  display: grid;
+  /* auto-fit + minmax: se adapta sin una sola media query */
+  grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr));
+  gap: var(--e-5);
+}
+
+/* En celular la rejilla se stackeaba en una sola columna: cada tarjeta,
+   con su aspect-ratio 4/5, ocupaba casi toda la pantalla y se sentía como
+   "una tarjeta a la vez". Se cambia a un carril horizontal con scroll-snap
+   donde cada tarjeta ocupa ~58% del ancho: así se ven ~1.8-2 tarjetas por
+   pantalla y el deslizar sigue siendo fluido (mismo patrón que el visor de
+   galería, que también usa gesto táctil en vez de flechas en móvil). */
+@media (max-width: 640px) {
+  .rejilla {
+    display: flex;
+    gap: var(--e-4);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--e-4);
+    padding-inline: var(--e-4);
+    margin-inline: calc(var(--e-4) * -1);
+    /* Oculta la barra de scroll sin quitar la funcionalidad */
+    scrollbar-width: none;
+  }
+  .rejilla::-webkit-scrollbar { display: none; }
+  .rejilla .pieza {
+    flex: 0 0 58%;
+    scroll-snap-align: start;
+  }
+  .pieza__nombre { font-size: var(--paso-0); }
+}
+
+/* Una sola pieza visual: la foto y el texto viven en el mismo recuadro, el
+   texto flota sobre el pie de la imagen con un velo corto. Antes eran dos
+   bloques apilados (foto arriba, franja de fondo sólido abajo) y esa franja
+   competía en tamaño con la foto misma. Ahora la foto ES la tarjeta. */
+.pieza {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: var(--radio-3);
+  text-decoration: none;
+  color: inherit;
+  background: var(--fondo-elevado);
+  isolation: isolate;
+  transition: transform var(--dur-normal) var(--ease-suave);
+}
+.pieza:hover { transform: translateY(-4px); }
+
+.pieza__foto { position: absolute; inset: 0; z-index: -2; }
+/* OJO: acá `.pieza__foto` es la clase del propio <picture> (se pasa como
+   `clase` a picture(), no es un div envoltorio) — el <picture
+   class="sello-cobre"> anidado es hijo DIRECTO de este mismo elemento, así
+   que ni siquiera `> picture` alcanza para excluirlo; hace falta
+   `:not(.sello-cobre)` explícito o se vuelve a estirar a la tarjeta
+   entera. El `img` sí puede quedar genérico: el img del sello hereda 100%
+   de SU padre (el propio .sello-cobre, ya acotado a su tamaño chico). */
+.pieza__foto > picture:not(.sello-cobre),
+.pieza__foto img { width: 100%; height: 100%; }
+.pieza__foto img {
+  object-fit: cover;
+  transition: scale var(--dur-lento) var(--ease-suave);
+}
+.pieza:hover .pieza__foto img { scale: 1.04; }
+
+/* Velo corto: solo lo que necesita el texto para leerse, no la tarjeta
+   entera — la foto sigue siendo lo que más pesa a simple vista. */
+.pieza::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(0deg, #0b0b0fe3 0%, #0b0b0f9c 34%, transparent 62%);
+}
+
+.pieza__cuerpo {
+  position: absolute;
+  inset: auto 0 0;
+  padding: var(--e-4) var(--e-4) var(--e-4);
+  display: grid;
+  gap: 2px;
+  color: #f4f2ee;
+}
+.pieza__nombre {
+  font-family: var(--fuente-display);
+  font-size: var(--paso-1);
+  font-weight: 400;
+  color: #f4f2ee;
+}
+.pieza__medida { font-size: var(--paso--2); color: #d8d2c8; }
+.pieza__opcion { font-size: var(--paso--2); color: #d8d2c8; }
+.pieza__cuerpo .precio { color: var(--acento-vivo); margin-top: 2px; }
+.pieza__cuerpo .precio__desde { color: #d8d2c8; }
+
+/* ═══════════════════════════════════════════════════════════
+   PRECIO
+   El precio manda en la tarjeta y en la ficha: es lo que la
+   gente busca primero y lo que más se esconde en los sitios
+   artesanales. Cifra grande, tabular y en el color de acento.
+   ═══════════════════════════════════════════════════════════ */
+.precio {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e-2);
+  color: var(--acento);
+  font-variant-numeric: tabular-nums;
+}
+.precio__desde {
+  font-size: var(--paso--2);
+  text-transform: uppercase;
+  letter-spacing: var(--track-amplio);
+  color: var(--texto-suave);
+}
+.precio__cifra { font-size: var(--paso-1); font-weight: 500; letter-spacing: -0.01em; }
+.precio--grande .precio__cifra { font-size: var(--paso-3); font-weight: 400; }
+
+.precio-bloque {
+  padding: var(--e-5) 0;
+  margin-block: var(--e-5);
+  border-block: 1px solid var(--borde);
+}
+
+/* Versiones y sobrecostos: la tabla que evita fundir $850.000 y $950.000 en
+   una cifra sola. Cada línea es una decisión de compra distinta. */
+.precio__lineas { list-style: none; padding: 0; margin-top: var(--e-4); display: grid; gap: var(--e-2); }
+.precio__lineas li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--e-4);
+  font-size: var(--paso--1);
+  color: var(--texto-suave);
+  padding-bottom: var(--e-2);
+  border-bottom: 1px dotted var(--borde);
+}
+.precio__lineas b { color: var(--texto); font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ═══════════════════════════════════════════════════════════
+   CAMPO PENDIENTE
+   Se ve. Es deliberado: un dato que falta debe estorbar hasta
+   que alguien lo llene, no esconderse y salir publicado a medias.
+   ═══════════════════════════════════════════════════════════ */
+.pendiente {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
+  padding: var(--e-1) var(--e-3);
+  border-radius: var(--radio-1);
+  border: 1px dashed var(--alerta);
+  /* El fondo teñido baja el contraste del propio --alerta por debajo de AA.
+     Se usa el fondo del tema y se reserva el tinte solo para el borde. */
+  background: var(--fondo-elevado);
+  color: var(--alerta);
+  font-family: var(--fuente-mono);
+  font-size: var(--paso--2);
+  line-height: 1.4;
+  text-align: left;
+}
+.pendiente::before { content: "⌛"; }
+
+.seccion--pendiente {
+  border: 1px dashed var(--alerta);
+  border-radius: var(--radio-3);
+  padding: var(--e-6);
+  background: color-mix(in srgb, var(--alerta) 5%, transparent);
+}
+
+.lista-simple { display: grid; gap: var(--e-2); list-style: none; padding: 0; }
+
+/* Se oculta todo lo pendiente al añadir ?limpio a la URL, para poder
+   enseñarle al cliente cómo se verá el sitio terminado. */
+body.limpio .pendiente,
+body.limpio .seccion--pendiente { display: none; }
+
+/* Ocultar el recuadro deja la fila con el rótulo y la casilla vacía, que se
+   lee peor que el pendiente. Si la fila entera era el pendiente, se va la
+   fila completa. */
+body.limpio .lista-datos__fila:has(> .lista-datos__valor > .pendiente),
+body.limpio .especificaciones tr:has(.pendiente) { display: none; }
+
+/* ═══════════════════════════════════════════════════════════
+   DATO DE EJEMPLO
+   Distinto del pendiente a propósito: aquí SÍ hay un valor a
+   la vista, y por eso el rótulo tiene que estar pegado a él.
+   El valor es falso; el rótulo es lo que impide que alguien
+   le escriba a un número inventado creyendo que es el real.
+
+   IMPORTANTE: el rótulo NO se oculta con ?limpio. Ocultarlo
+   volvería el dato falso indistinguible de uno verdadero, que
+   es justo lo que hay que evitar.
+   ═══════════════════════════════════════════════════════════ */
+.ejemplo { display: grid; gap: var(--e-1); justify-items: start; }
+.ejemplo__dato { color: var(--texto); }
+
+.ejemplo__nota {
+  display: inline-block;
+  padding: var(--e-1) var(--e-2);
+  border-radius: var(--radio-1);
+  border: 1px solid var(--alerta);
+  /* --alerta sobre --fondo-elevado: 9.5:1 en oscuro, 5.3:1 en claro — AA en
+     ambos. El tinte se reserva para el borde, como en .pendiente. */
+  background: var(--fondo-elevado);
+  color: var(--alerta);
+  font-family: var(--fuente-mono);
+  font-size: var(--paso--2);
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FIGURAS CON PIE
+   El pie de foto es contenido, no decoración: es el único
+   texto del sitio que Rafael escribió sobre su propio taller.
+   ═══════════════════════════════════════════════════════════ */
+.pie-foto {
+  margin-top: var(--e-3);
+  font-size: var(--paso--1);
+  line-height: var(--interlineado-corto);
+  color: var(--texto-suave);
+  max-width: var(--medida-estrecha);
+  text-wrap: pretty;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CIFRA DESTACADA
+   Un solo número grande por sección. Los 14 años del Hotel
+   Terra son el dato más valioso de la marca: se leen antes
+   que el párrafo que los explica.
+   ═══════════════════════════════════════════════════════════ */
+.cifra {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e-3);
+  margin-bottom: var(--e-5);
+}
+.cifra__numero {
+  font-family: var(--fuente-display);
+  font-size: var(--paso-6);
+  font-weight: 300;
+  line-height: 0.85;
+  letter-spacing: var(--track-apretado);
+  color: var(--acento);
+  font-variant-numeric: lining-nums;
+}
+.cifra__unidad {
+  font-size: var(--paso--1);
+  line-height: var(--interlineado-corto);
+  letter-spacing: var(--track-amplio);
+  text-transform: uppercase;
+  color: var(--texto-suave);
+  /* Con versalitas y tracking amplio, 1ch se queda corto como unidad: hacen
+     falta ~16 para que "INTEMPERIE" quepa entera. Y `overflow-wrap: normal`
+     porque el reset global parte palabras, y una palabra partida en
+     mayúsculas espaciadas es ilegible. */
+  max-width: 16ch;
+  overflow-wrap: normal;
+}
+.cifra--menor .cifra__numero { font-size: var(--paso-4); }
+
+/* ═══════════════════════════════════════════════════════════
+   LA PRUEBA (durabilidad)
+   Una escena, no una tarjeta. La sección es una pista alta y
+   el escenario va clavado ocupando la pantalla: al deslizar,
+   la foto sube desde abajo hasta ocuparla toda (sin nada
+   encima), y solo después entra el texto con su velo. Las dos
+   variables las escribe `activarPrueba()` en app.js; los
+   valores por defecto (1) dejan la escena resuelta si no hay
+   JS o si se pide reducir movimiento.
+   ═══════════════════════════════════════════════════════════ */
+#durabilidad { padding-block: 0; }
+
+.prueba {
+  --entrada: 1;
+  --texto: 1;
+  position: relative;
+  height: 300svh;          /* la pista: lo que hay que deslizar para ver todo */
+}
+
+.prueba__escena {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  margin: 0;
+  overflow: hidden;
+  isolation: isolate;
+  display: flex;
+  align-items: flex-end;
+  background: var(--fondo);
+}
+
+/* La foto entra recortada por abajo y con los flancos adentro — se lee como
+   una lámina que asoma —, y el recorte se abre hasta el borde de la pantalla
+   a medida que sube. `clip-path` y `transform` son trabajo del compositor:
+   no reflotan el layout en ningún cuadro. */
+.prueba__foto {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  clip-path: inset(
+    calc((1 - var(--entrada)) * 34%)
+    calc((1 - var(--entrada)) * 7%)
+    0
+    calc((1 - var(--entrada)) * 7%)
+    round calc((1 - var(--entrada)) * 20px));
+  transform: translateY(calc((1 - var(--entrada)) * 9%))
+             scale(calc(1 + (1 - var(--entrada)) * 0.05));
+  will-change: clip-path, transform;
+}
+/* Mismo caso que `.pieza__foto`: la clase va sobre el propio <picture>
+   (clase de picture()), así que el sello anidado es hijo directo y
+   necesita el `:not()` explícito, no basta con `>`. */
+.prueba__foto > picture:not(.sello-cobre),
+.prueba__foto img { display: block; width: 100%; height: 100%; }
+.prueba__foto img { object-fit: cover; object-position: 50% 42%; }
+
+/* El velo NO existe mientras la foto es la protagonista: nace con el texto y
+   solo cubre el pie de la pantalla. Es lo que evita que el texto se coma la
+   fotografía, que era el reclamo. */
+.prueba__velo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--texto);
+  background: linear-gradient(0deg,
+    #0b0b0fe0 0%, #0b0b0f8a 26%, #0b0b0f38 44%, transparent 62%);
+}
+
+.prueba__texto {
+  width: min(76rem, 100% - var(--e-5) * 2);
+  margin-inline: auto;
+  padding-block: var(--e-8);
+  opacity: var(--texto);
+  translate: 0 calc((1 - var(--texto)) * 28px);
+  color: #f4f2ee;
+}
+/* La caja se queda estrecha a propósito: el texto acompaña la foto, no la
+   tapa. En pantalla ancha ocupa poco más de un tercio. */
+.prueba__caja { display: grid; gap: var(--e-3); justify-items: start; max-width: 34rem; }
+
+.prueba__etiqueta {
+  font-size: var(--paso--1);
+  letter-spacing: var(--track-marca);
+  text-transform: uppercase;
+  color: #d8d2c8;
+}
+.prueba__titulo {
+  font-family: var(--fuente-display);
+  font-size: var(--paso-3);
+  font-weight: 300;
+  line-height: var(--interlineado-apretado);
+  letter-spacing: var(--track-apretado);
+  text-wrap: balance;
+}
+/* Sobre la foto los tokens del tema claro no contrastan: cobre claro fijo,
+   igual que en las portadas. */
+.prueba .cifra { margin-bottom: 0; }
+.prueba .cifra__numero { color: #dcae7c; }
+.prueba .cifra__unidad { color: #d8d2c8; }
+.prueba__relato {
+  font-size: var(--paso--1);
+  color: #e6e1d8;
+  max-width: var(--medida-estrecha);
+  text-wrap: pretty;
+}
+.prueba__pie { font-size: var(--paso--2); color: #b9b2a6; }
+
+/* Sin JS o con movimiento reducido no hay pista que deslizar: la escena se
+   muestra ya resuelta, en una sola pantalla. */
+.sin-js .prueba { height: auto; }
+.sin-js .prueba__escena { position: relative; }
+@media (prefers-reduced-motion: reduce) {
+  .prueba { height: auto; }
+  .prueba__escena { position: relative; }
+  .prueba__foto { will-change: auto; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ARTESANO
+   El retrato de Rafael al centro y tres fotos del oficio que
+   salen volando desde detrás de él hasta sus puestos, al
+   estilo del enjambre de Vegas del Verde pero con tres piezas.
+   La escena se rearma al salir de pantalla para poder verla
+   otra vez, igual que los iconos que se dibujan.
+   ═══════════════════════════════════════════════════════════ */
+.artesano { display: grid; gap: var(--e-8); align-items: center; }
+@media (min-width: 900px) {
+  .artesano { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--e-8); }
+}
+
+.artesano__lado { display: grid; gap: var(--e-6); }
+
+.artesano__escena {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  max-width: 34rem;
+  margin-inline: auto;
+  width: 100%;
+}
+
+.artesano__retrato {
+  position: absolute;
+  inset: 5% 14%;
+  border-radius: var(--radio-3);
+  overflow: hidden;
+  box-shadow: var(--sombra-3);
+  background: var(--fondo-elevado);
+}
+.artesano__retrato > picture { width: 100%; height: 100%; }
+.artesano__retrato img { width: 100%; height: 100%; object-fit: cover; }
+
+.satelite {
+  position: absolute;
+  width: 36%;
+  margin: 0;
+}
+/* La caja visible es la de adentro: la figura queda como puro marco de
+   posición para que cada una lleve su propio movimiento sin pisarse. */
+.satelite__cuerpo {
+  display: block;
+  /* Corrido media órbita a la izquierda a propósito: el ciclo empieza en su
+     punto más a la derecha (+--radio), así que sin esta compensación el
+     satélite pegaría un brinco de unos píxeles justo al terminar el vuelo.
+     Con ella, el primer cuadro de la órbita cae exactamente donde aterrizó. */
+  position: relative;
+  left: calc(var(--radio) * -1);
+  border-radius: var(--radio-2);
+  overflow: hidden;
+  box-shadow: var(--sombra-2);
+  background: var(--fondo-elevado);
+}
+/* El picture() real vive dentro de `.satelite__cuerpo` (un span envoltorio
+   intermedio, ver app.js), no directo bajo `.satelite` — por eso el
+   selector apunta ahí y no a `.satelite > picture`, que ya no
+   encontraría nada que estilar. */
+.satelite__cuerpo > picture { display: block; width: 100%; height: 100%; aspect-ratio: 3 / 4; }
+.satelite img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Puesto final, punto de partida (hacia el centro de la escena) y órbita.
+   `--radio` en px y no en %: el porcentaje se mide contra el ancho del
+   propio satélite, que cambia con la pantalla, y la órbita debe verse igual
+   de discreta en móvil que en escritorio. Duraciones primas entre sí y una
+   girando al revés: aunque las tres arranquen casi juntas, nunca vuelven a
+   coincidir, que es lo que evita el aire de carrusel. */
+.satelite--1 { top: -3%;    left: -5%;  --giro: -5deg; --dx: 85%;  --dy: 55%;  --espera: 60ms;
+               --radio: 16px; --orbita-dur: 13s; --orbita-sentido: normal; }
+.satelite--2 { top: 34%;    right: -7%; --giro: 4deg;  --dx: -85%; --dy: 5%;   --espera: 180ms;
+               --radio: 13px; --orbita-dur: 17s; --orbita-sentido: reverse; }
+.satelite--3 { bottom: -4%; left: 3%;   --giro: 3deg;  --dx: 70%;  --dy: -55%; --espera: 300ms;
+               --radio: 15px; --orbita-dur: 15s; --orbita-sentido: normal; }
+
+/* Nacen pequeñas y transparentes en el regazo del retrato; al entrar la
+   escena vuelan a su puesto y se asientan con su leve inclinación. */
+.satelite {
+  opacity: 0;
+  transform: translate(var(--dx), var(--dy)) scale(0.18) rotate(0deg);
+  transition:
+    transform var(--dur-lento) var(--ease-suave),
+    opacity var(--dur-normal) var(--ease-salida);
+  transition-delay: var(--espera);
+}
+.escena-lista .satelite {
+  opacity: 1;
+  transform: translate(0, 0) scale(1) rotate(var(--giro));
+}
+.rearmando .satelite { transition: none; }
+
+/* La órbita: la elipse que describe cada foto alrededor del retrato una vez
+   que ya aterrizó. Ocho paradas sobre la circunferencia (cada 45°, con los
+   0.707 de la diagonal) y avance lineal entre ellas: la cuerda que se salta
+   el arco mide menos de un píxel a este radio, así que se lee como un giro
+   redondo y no hace falta `offset-path`. Achatada en Y (0.62) porque la
+   escena es más alta que ancha y un círculo perfecto empujaría los
+   satélites fuera del retrato. Solo `translate`: es trabajo del compositor,
+   no toca el layout. */
+@keyframes orbita-satelite {
+  0%   { translate: calc(var(--radio) *  1)     calc(var(--radio) *  0);     }
+  12.5%{ translate: calc(var(--radio) *  0.707) calc(var(--radio) *  0.438); }
+  25%  { translate: calc(var(--radio) *  0)     calc(var(--radio) *  0.62);  }
+  37.5%{ translate: calc(var(--radio) * -0.707) calc(var(--radio) *  0.438); }
+  50%  { translate: calc(var(--radio) * -1)     calc(var(--radio) *  0);     }
+  62.5%{ translate: calc(var(--radio) * -0.707) calc(var(--radio) * -0.438); }
+  75%  { translate: calc(var(--radio) *  0)     calc(var(--radio) * -0.62);  }
+  87.5%{ translate: calc(var(--radio) *  0.707) calc(var(--radio) * -0.438); }
+  100% { translate: calc(var(--radio) *  1)     calc(var(--radio) *  0);     }
+}
+
+/* Arranca en pausa y espera a que el vuelo termine: el retardo es la espera
+   propia del satélite más lo que dura su viaje. Como cada uno espera algo
+   distinto, además entran a la órbita en fases distintas, gratis. */
+.satelite__cuerpo {
+  animation: orbita-satelite var(--orbita-dur) linear infinite;
+  animation-direction: var(--orbita-sentido);
+  animation-delay: calc(var(--espera) + var(--dur-lento));
+  animation-play-state: paused;
+  will-change: translate;
+}
+/* Fuera de pantalla el observador quita `.escena-lista` y esto vuelve a
+   `paused`: la animación se congela donde iba en vez de seguir gastando
+   cuadros, y al reentrar retoma desde ahí, sin salto. */
+.escena-lista .satelite__cuerpo { animation-play-state: running; }
+
+/* ═══════════════════════════════════════════════════════════
+   NOTA MANUSCRITA
+   La letra de molde de Rafael, literal de su lámina. Solo se
+   usa para citas suyas: es voz, no interfaz.
+   ═══════════════════════════════════════════════════════════ */
+.manuscrita {
+  display: grid;
+  gap: var(--e-3);
+  max-width: var(--medida-estrecha);
+  padding-top: var(--e-4);
+  border-top: 1px solid var(--borde);
+}
+.manuscrita p {
+  font-family: var(--fuente-manuscrita);
+  font-size: var(--paso-0);
+  line-height: 1.55;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--texto-suave);
+}
+.manuscrita p:first-of-type { color: var(--texto); }
+
+/* ═══════════════════════════════════════════════════════════
+   EL MATERIAL
+   Hermana de "La prueba", con otro argumento: aquí no sube
+   nada — aquí el metal ENVEJECE. Las tres pátinas (de menos a
+   más oxidada) se cruzan según lo que se lleva deslizado, así
+   que el cobre madura bajo el dedo de quien lee, que es
+   exactamente lo que cuenta el texto al lado. Las variables
+   las escribe `activarMaterial()` en app.js; los valores por
+   defecto dejan la escena resuelta sin JS o con movimiento
+   reducido.
+   ═══════════════════════════════════════════════════════════ */
+.material {
+  --edad: 0.62;
+  --texto: 1;
+  --detalle: 1;
+  /* Las dos transiciones del envejecimiento, calculadas una sola vez: la
+     segunda pátina entra sobre la primera y la tercera sobre la segunda.
+     Entre rampa y rampa hay tramos planos — cada edad se deja ver sola. */
+  --r2: clamp(0, calc((var(--edad) - 0.15) / 0.27), 1);
+  --r3: clamp(0, calc((var(--edad) - 0.62) / 0.26), 1);
+  position: relative;
+  height: 280svh;
+  margin-top: var(--e-9);
+}
+
+.material__escena {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  background: #17120f;   /* el cobre más oscuro de las propias fotos */
+}
+
+.material__capas { position: absolute; inset: 0; z-index: -2; }
+.material__capas img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  /* Un acercamiento largo mientras el metal madura: la textura nunca queda
+     del todo quieta, pero tampoco se le ve moverse. */
+  scale: calc(1 + var(--edad) * 0.06);
+}
+/* El fundido de las tres edades. La primera pátina es el fondo y siempre
+   está; las otras dos se posan encima, en orden, según su rampa. Así el
+   cruce es limpio (lo de arriba tapa lo de abajo) y no hay que compensar
+   opacidades entre capas. */
+.material__capas img { opacity: 1; }
+.material__capas img:nth-child(2) { opacity: var(--r2); }
+.material__capas img:nth-child(3) { opacity: var(--r3); }
+
+/* Velo en diagonal: cerrado del lado del texto, abierto del otro para que la
+   textura respire. Nace con el texto, no antes: mientras el metal envejece
+   solo, la foto se ve limpia. */
+.material__velo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--texto);
+  background: linear-gradient(100deg,
+    #0b0b0fdb 0%, #0b0b0fa6 44%, #0b0b0f3d 76%, transparent 100%);
+}
+
+.material__contenido {
+  width: min(76rem, 100% - var(--e-5) * 2);
+  margin-inline: auto;
+  display: grid;
+  gap: var(--e-5);
+  justify-items: start;
+  color: #f4f2ee;
+}
+.material__cabeza {
+  display: grid;
+  gap: var(--e-3);
+  justify-items: start;
+  opacity: var(--texto);
+  translate: 0 calc((1 - var(--texto)) * 26px);
+}
+.material__cuerpo {
+  display: grid;
+  gap: var(--e-4);
+  justify-items: start;
+  max-width: var(--medida);
+  opacity: var(--detalle);
+  translate: 0 calc((1 - var(--detalle)) * 20px);
+}
+
+.material__etiqueta {
+  font-size: var(--paso--1);
+  letter-spacing: var(--track-marca);
+  text-transform: uppercase;
+  color: #d8d2c8;
+}
+.material__titulo {
+  font-family: var(--fuente-display);
+  font-size: var(--paso-4);
+  font-weight: 300;
+  line-height: var(--interlineado-apretado);
+  letter-spacing: var(--track-apretado);
+  text-wrap: balance;
+}
+.material__cuerpo p { color: #e6e1d8; text-wrap: pretty; }
+.material__cuerpo p:first-child { color: #f4f2ee; }
+
+/* Las tres edades como una regla: la que corresponde al avance se enciende.
+   Es la leyenda de lo que se está viendo, y de paso avisa de que la imagen
+   del fondo responde al deslizamiento. */
+.material__etapas {
+  list-style: none;
+  padding: 0;
+  margin-top: var(--e-2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-3) var(--e-5);
+}
+.material__etapas li {
+  display: flex;
+  align-items: center;
+  gap: var(--e-2);
+  font-size: var(--paso--2);
+  letter-spacing: var(--track-amplio);
+  text-transform: uppercase;
+  color: #d8d2c8;
+  opacity: calc(0.28 + var(--peso, 1) * 0.72);
+}
+.material__etapas li::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radio-completo);
+  background: #dcae7c;
+}
+/* Las mismas dos rampas: el rótulo se enciende con su pátina y se apaga
+   cuando la siguiente la cubre. El del medio manda mientras entró la
+   segunda pero todavía no la tercera. */
+.material__etapas li:nth-child(1) { --peso: calc(1 - var(--r2)); }
+.material__etapas li:nth-child(2) { --peso: calc(var(--r2) * (1 - var(--r3))); }
+.material__etapas li:nth-child(3) { --peso: var(--r3); }
+
+/* Sin JS o con movimiento reducido no hay pista que deslizar: una sola
+   pantalla, con el metal a media edad y todo el texto a la vista. */
+.sin-js .material { height: auto; }
+.sin-js .material__escena { position: relative; }
+@media (prefers-reduced-motion: reduce) {
+  .material { height: auto; }
+  .material__escena { position: relative; }
+  .material__capas img { scale: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .satelite { opacity: 1; transform: translate(0, 0) scale(1) rotate(var(--giro)); }
+  /* Ni vuelo ni órbita: las fotos quedan quietas en su puesto. */
+  .satelite__cuerpo { animation: none; translate: none; left: 0; will-change: auto; }
+}
+.artesano__ficha { display: grid; gap: var(--e-3); align-content: start; justify-items: start; }
+.artesano__nombre {
+  font-family: var(--fuente-display);
+  font-size: var(--paso-3);
+  font-weight: 300;
+  line-height: var(--interlineado-apretado);
+  letter-spacing: var(--track-apretado);
+}
+.artesano__rol {
+  font-size: var(--paso--1);
+  letter-spacing: var(--track-amplio);
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+.artesano__ficha .cifra { margin-bottom: 0; margin-top: var(--e-2); }
+
+.artesano__relato { display: grid; gap: var(--e-5); max-width: var(--medida); }
+.artesano__relato p { color: var(--texto-suave); }
+/* La primera frase es la que engancha: entra en display y a mayor cuerpo. */
+.artesano__relato p:first-child {
+  font-family: var(--fuente-display);
+  font-size: var(--paso-2);
+  font-weight: 300;
+  line-height: var(--interlineado-corto);
+  color: var(--texto);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BLOQUES DE DATOS (envíos · pagos · políticas)
+   ═══════════════════════════════════════════════════════════ */
+.bloques {
+  display: grid;
+  gap: var(--e-6);
+  grid-template-columns: repeat(auto-fit, minmax(min(19rem, 100%), 1fr));
+}
+.bloque {
+  padding: var(--e-6);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-3);
+  background: var(--superficie);
+  scroll-margin-top: 6rem;
+}
+.bloque__titulo {
+  font-family: var(--fuente-display);
+  font-size: var(--paso-1);
+  font-weight: 400;
+  margin-bottom: var(--e-4);
+  padding-bottom: var(--e-3);
+  border-bottom: 1px solid var(--borde);
+}
+
+/* El ícono dibujado a mano que corona cada bloque. Se traza solo al entrar
+   la sección en pantalla (ver ICONOS QUE SE DIBUJAN, al final). */
+.bloque__icono {
+  width: 3rem;
+  height: 3rem;
+  color: var(--acento);
+  margin-bottom: var(--e-4);
+}
+.bloque__icono svg { width: 100%; height: 100%; }
+
+.lista-datos { display: grid; gap: var(--e-4); }
+.lista-datos__fila { display: grid; gap: var(--e-1); }
+.lista-datos__clave {
+  font-size: var(--paso--2);
+  letter-spacing: var(--track-amplio);
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+.lista-datos__valor {
+  margin: 0;
+  font-size: var(--paso--1);
+  color: var(--texto);
+  display: grid;
+  gap: var(--e-1);
+  justify-items: start;
+}
+
+/* Las marcas con las que se trabaja (transportadoras, medios de pago):
+   glifos de trazo propio con su nombre, en fila discreta al pie del bloque. */
+.bloque__marcas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-4) var(--e-5);
+  margin-top: var(--e-5);
+  padding-top: var(--e-4);
+  border-top: 1px dotted var(--borde);
+}
+.marca {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
+  font-size: var(--paso--2);
+  letter-spacing: var(--track-amplio);
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+.marca svg { width: 1.4rem; height: 1.4rem; flex: none; color: var(--acento); }
+
+/* ═══════════════════════════════════════════════════════════
+   CONTACTO
+   ═══════════════════════════════════════════════════════════ */
+.contacto { display: grid; gap: var(--e-7); }
+@media (min-width: 900px) {
+  .contacto { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--e-8); }
+}
+.contacto__accion { display: grid; gap: var(--e-6); align-content: start; }
+
+/* Los canales reales, cada uno con su ícono dibujado a mano y el dato en
+   display grande: el número se lee como pieza, no como una fila de tabla. */
+.canales { display: grid; gap: var(--e-5); align-content: start; }
+.canal {
+  display: flex;
+  align-items: center;
+  gap: var(--e-4);
+  text-decoration: none;
+  color: var(--texto);
+}
+.canal__icono {
+  width: 2.6rem;
+  height: 2.6rem;
+  flex: none;
+  color: var(--acento);
+}
+.canal__icono svg { width: 100%; height: 100%; }
+.canal__texto { display: grid; gap: 2px; min-width: 0; }
+.canal__tipo {
+  font-size: var(--paso--2);
+  letter-spacing: var(--track-amplio);
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+.canal__dato {
+  font-family: var(--fuente-display);
+  font-size: var(--paso-1);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  overflow-wrap: anywhere;
+  transition: color var(--dur-micro) var(--ease-salida);
+}
+a.canal:hover .canal__dato { color: var(--acento); }
+.cta { display: grid; gap: var(--e-3); justify-items: start; }
+.nota { font-size: var(--paso--2); color: var(--texto-suave); margin-top: var(--e-3); }
+
+/* ═══════════════════════════════════════════════════════════
+   FICHA DE PRODUCTO
+   ═══════════════════════════════════════════════════════════ */
+.ficha { display: grid; gap: var(--e-7); padding-top: 6rem; }
+@media (min-width: 900px) { .ficha { grid-template-columns: 1.1fr 1fr; align-items: start; } }
+
+.galeria__principal {
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radio-3);
+  overflow: hidden;
+  background: var(--fondo-elevado);
+}
+/* display:block (heredado del reset) no basta: sin un height explícito la
+   altura de <picture> queda en auto, y entonces el height:100% del <img>
+   no tiene contra qué resolver y se ignora. Mismo bug que en el héroe. */
+.galeria__principal > picture { width: 100%; height: 100%; }
+.galeria__principal img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Fichas técnicas con cotas impresas: la imagen se ve entera (contain, lo
+   pone picture() en línea) y la franja sobrante queda en un fondo oscuro
+   que empata con el fondo negro de esas fichas. */
+.foto-entera { background: #131316; }
+
+/* ═══════════════════════════════════════════════════════════
+   SELLO DE COBRE (medalla de autenticidad, inyectada por picture())
+   Vive dentro de CADA <picture> del sitio — ver vista.js. Desde que el
+   sello dejó de ser un SVG inline y pasó a ser una foto real, es OTRO
+   <picture> (con su propio <source>/<img>) anidado dentro del picture
+   principal de la foto. Por eso todas las reglas que antes decían
+   `.heroe__fondo picture`, `.portada picture`, `.pieza__foto picture`,
+   etc. se acotaron a hijo directo (`.heroe__fondo > picture`...): un
+   selector de tipo `picture` sin acotar también agarra el <picture
+   class="sello-cobre"> anidado y lo estira al tamaño del marco entero
+   (bug real visto en móvil: el sello tapaba la pantalla completa).
+   `picture` a secas sí necesita quedar como selector de tipo genérico
+   para darle `position: relative` de base a TODO picture, sello
+   incluido — ahí no hay bug porque `.sello-cobre` (una clase) le gana
+   en especificidad y lo vuelve `absolute`.
+   Tamaño: clamp entre 26px (miniatura/tarjeta pequeña) y 64px (fotos
+   grandes de galería/héroe), ~11% del ancho del contenedor de por
+   medio — pequeño a propósito para no competir con la foto ni tapar
+   botones o notas que viven FUERA de picture (WhatsApp, "EJEMPLO",
+   etc. están fuera de este elemento, así que nunca chocan). */
+picture { position: relative; }
+/* El héroe y las portadas de categoría ocupan casi el viewport completo
+   (100svh / 92svh): su esquina inferior derecha puede coincidir con el
+   botón flotante de WhatsApp, que es `position: fixed` en ese mismo
+   rincón (ver `.wsp`, right/bottom var(--e-5), 3.5rem de lado). Se sube
+   el sello lo justo para despejarlo en vez de superponerse. */
+.heroe__fondo .sello-cobre,
+.portada .sello-cobre {
+  bottom: calc(var(--e-5) + 3.5rem + var(--e-2));
+}
+.sello-cobre {
+  position: absolute;
+  right: var(--e-2, 0.5rem);
+  bottom: var(--e-2, 0.5rem);
+  width: clamp(26px, 11%, 64px);
+  height: auto;
+  aspect-ratio: 1;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 2px #00000066);
+}
+/* La foto ya viene recortada a círculo con fondo transparente (ver
+   vista.js), pero se redondea también por CSS como cinturón y tirantes:
+   si algún día se sube un derivado sin la máscara perfecta, no se ve
+   un cuadrado feo pegado a la esquina. */
+.sello-cobre img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.galeria__miniaturas { display: flex; gap: var(--e-3); margin-top: var(--e-3); flex-wrap: wrap; }
+.galeria__miniatura {
+  width: 4.5rem; aspect-ratio: 1;
+  border-radius: var(--radio-2);
+  overflow: hidden;
+  border: 2px solid transparent;
+  background: none; padding: 0; cursor: pointer;
+  transition: border-color var(--dur-rapido) var(--ease-salida);
+}
+.galeria__miniatura[aria-current="true"] { border-color: var(--acento); }
+.galeria__miniatura img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ═══════════════════════════════════════════════════════════
+   SUGERIDOS (ficha de producto)
+   ═══════════════════════════════════════════════════════════ */
+.sugeridos { padding-block: var(--e-9); border-top: 1px solid var(--borde); margin-top: var(--e-8); }
+.sugeridos__rejilla {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);   /* móvil: 2 sugeridas */
+  gap: var(--e-5);
+  margin-top: var(--e-5);
+}
+@media (min-width: 900px) {
+  .sugeridos__rejilla { grid-template-columns: repeat(3, 1fr); }   /* desktop: 3 */
+}
+
+.especificaciones { width: 100%; border-collapse: collapse; margin-block: var(--e-5); }
+.especificaciones th,
+.especificaciones td {
+  text-align: left;
+  padding: var(--e-3) 0;
+  border-bottom: 1px solid var(--borde);
+  font-size: var(--paso--1);
+  vertical-align: top;
+}
+/* El padding derecho no es estética: sin él, en móvil el rótulo largo
+   ("Saliente desde la pared") se pega al valor y se lee como una sola
+   palabra ("…pared8 cm"). */
+.especificaciones th {
+  color: var(--texto-suave);
+  font-weight: 400;
+  width: 42%;
+  padding-right: var(--e-4);
+}
+.especificaciones td { color: var(--texto); }
+
+/* ═══════════════════════════════════════════════════════════
+   PIE
+   ═══════════════════════════════════════════════════════════ */
+.pie {
+  border-top: 1px solid var(--borde);
+  padding-block: var(--e-8) var(--e-6);
+  margin-top: var(--e-9);
+}
+.pie__rejilla { display: grid; gap: var(--e-6); grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr)); }
+.pie__titulo { font-size: var(--paso--1); letter-spacing: var(--track-amplio); text-transform: uppercase; color: var(--texto-suave); margin-bottom: var(--e-3); }
+.pie__lista { list-style: none; padding: 0; display: grid; }
+.pie__lista a {
+  /* El enlace ocupa toda la fila y 44px de alto: en el pie los enlaces cortos
+     ("Grifos") dejaban un objetivo de 35×17px, imposible de acertar con el dedo. */
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: var(--texto-suave);
+  text-decoration: none;
+  font-size: var(--paso--1);
+}
+.pie__lista a:hover { color: var(--texto); }
+.pie__lista li { display: grid; }
+.pie__legal { margin-top: var(--e-7); padding-top: var(--e-5); border-top: 1px solid var(--borde); font-size: var(--paso--2); color: var(--texto-suave); }
+
+/* En el pie el wordmark va acompañado del nombre legal escrito: RSILVA es la
+   marca gráfica, "Accesorios en Cobre" es cómo se llama el negocio. */
+.pie__marca {
+  display: grid;
+  gap: var(--e-3);
+  justify-items: start;
+  align-content: start;   /* si no, la columna se estira y separa marca y nombre */
+  color: var(--texto);
+}
+.pie__marca .wordmark { height: 1.75rem; }
+.pie__nombre {
+  font-family: var(--fuente-display);
+  font-size: var(--paso-1);
+  letter-spacing: var(--track-amplio);
+  color: var(--texto);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   VOLVER (flotante, en todo el sitio)
+   Espejo del WhatsApp flotante pero en la esquina opuesta, con
+   el mismo tamaño y sombra para que se lean como una pareja de
+   botones y no como dos sistemas distintos. Lo inyecta
+   `activarVolver()` en vista.js.
+   ═══════════════════════════════════════════════════════════ */
+.volver {
+  position: fixed;
+  left: var(--e-5);
+  bottom: var(--e-5);
+  z-index: var(--z-flotante);
+  display: flex;
+  align-items: center;
+  gap: var(--e-2);
+  height: 3rem;
+  padding: 0 var(--e-4) 0 var(--e-3);
+  border-radius: var(--radio-completo);
+  border: 1px solid var(--borde);
+  background: var(--fondo-elevado);
+  color: var(--texto);
+  font: inherit;
+  font-size: var(--paso--1);
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--sombra-2);
+  transition: transform var(--dur-rapido) var(--ease-resorte),
+              background-color var(--dur-rapido) var(--ease-salida);
+}
+.volver:hover { transform: scale(1.04); background: var(--superficie); }
+.volver svg { flex: none; }
+
+/* ═══════════════════════════════════════════════════════════
+   WHATSAPP FLOTANTE
+   ═══════════════════════════════════════════════════════════ */
+.wsp {
+  position: fixed;
+  right: var(--e-5);
+  bottom: var(--e-5);
+  z-index: var(--z-flotante);
+  display: grid;
+  justify-items: center;
+  gap: var(--e-1);
+}
+.wsp__boton {
+  width: 3.5rem; height: 3.5rem;
+  display: grid; place-items: center;
+  border-radius: var(--radio-completo);
+  background: #25d366;
+  color: #04240f;                 /* sobre #25d366 → 8.1:1  AAA */
+  box-shadow: var(--sombra-2);
+  transition: transform var(--dur-rapido) var(--ease-resorte);
+}
+.wsp__boton:hover { transform: scale(1.08); }
+
+/* Llamada directa, encima del botón de WhatsApp — mismo número, para quien
+   prefiere marcar en vez de escribir. */
+.wsp__llamar {
+  display: flex;
+  align-items: center;
+  gap: var(--e-2);
+  height: 2.5rem;
+  padding: 0 var(--e-3);
+  border-radius: var(--radio-completo);
+  border: 1px solid var(--borde);
+  background: var(--fondo-elevado);
+  color: var(--texto);
+  font-size: var(--paso--1);
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: var(--sombra-2);
+  transition: transform var(--dur-rapido) var(--ease-resorte),
+              background-color var(--dur-rapido) var(--ease-salida);
+}
+.wsp__llamar:hover { transform: scale(1.04); background: var(--superficie); }
+
+/* El icono verde promete WhatsApp. Mientras el número sea de ejemplo, el
+   botón lleva a los datos de contacto y lo dice aquí, encima. */
+.wsp__tag {
+  padding: 0 var(--e-2);
+  border-radius: var(--radio-completo);
+  border: 1px solid var(--alerta);
+  background: var(--fondo-elevado);
+  color: var(--alerta);
+  font-family: var(--fuente-mono);
+  font-size: var(--paso--2);
+  line-height: 1.7;
+  box-shadow: var(--sombra-1);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ICONOS QUE SE DIBUJAN SOLOS
+   Misma técnica que Vegas del Verde: cada forma del SVG lleva
+   `pathLength="1"`, se esconde con un guion tan largo como el
+   propio camino y se recoge el desfase a cero al entrar la
+   sección en pantalla. Los detalles sueltos (puntos, marcas
+   que no son trazo continuo) van con `data-traza="detalle"` y
+   se posan al final con opacidad, cuando el contorno casi
+   termina. El disparador vive en app.js y vigila CADA ícono
+   (no la sección: con umbral por sección el trazado corría
+   fuera de pantalla y llegaba ya dibujado); al salir bien de
+   vista se rearma para repetirse en la próxima visita. Las
+   clases pueden caer en el propio SVG (disparador nuevo) o en
+   un contenedor (contrato viejo): ambas formas conviven aquí.
+   Aquí no hace falta el seguro sin-JS de Vegas: estos íconos
+   solo existen cuando app.js los inyecta.
+   ═══════════════════════════════════════════════════════════ */
+.icono-traza > :not([stroke-dasharray]):not([data-traza="detalle"]) {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.icono-traza.traza-lista > :not([stroke-dasharray]):not([data-traza="detalle"]),
+.traza-lista .icono-traza > :not([stroke-dasharray]):not([data-traza="detalle"]) {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset var(--dur-traza) var(--ease-traza);
+}
+.icono-traza > [data-traza="detalle"] { opacity: 0; }
+.icono-traza.traza-lista > [data-traza="detalle"],
+.traza-lista .icono-traza > [data-traza="detalle"] {
+  opacity: 1;
+  transition: opacity var(--dur-traza-detalle) var(--ease-salida);
+  transition-delay: calc(var(--dur-traza) * 0.66);
+}
+/* Rearme instantáneo al salir de pantalla: sin esto el trazo se des-dibuja
+   a la vista y la siguiente entrada arranca desde donde quedara. */
+.icono-traza.rearmando > *,
+.rearmando .icono-traza > * { transition: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .icono-traza > :not([stroke-dasharray]):not([data-traza="detalle"]) {
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+  .icono-traza > [data-traza="detalle"] { opacity: 1; transition: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   REVELADO AL ENTRAR EN PANTALLA
+   ═══════════════════════════════════════════════════════════ */
+[data-revelar] {
+  opacity: 0;
+  translate: 0 24px;
+  transition: opacity var(--dur-normal) var(--ease-salida),
+              translate var(--dur-normal) var(--ease-salida);
+  transition-delay: var(--retardo, 0ms);
+}
+[data-revelar].visible { opacity: 1; translate: 0 0; }
+
+/* Sin JS el contenido debe verse igual: nunca se queda invisible. */
+.sin-js [data-revelar] { opacity: 1; translate: 0 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-revelar] { opacity: 1; translate: 0 0; transition: none; }
+  .heroe__flecha { animation: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   GALERÍA (galeria.html)
+   El archivo de fotos del taller. Rejilla de mampostería y no
+   una cuadrícula pareja: estas fotos vienen en proporciones
+   distintas — verticales de ambiente, apaisadas de lámina — y
+   forzarlas a un recorte único cortaría cotas y duchas por la
+   mitad. Con columnas verticales cada foto entra completa.
+   ═══════════════════════════════════════════════════════════ */
+.galeria-cabeza { padding-top: 8rem; padding-bottom: var(--e-6); }
+
+.galeria__filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-2);
+  margin-top: var(--e-6);
+}
+.filtro {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
+  min-height: 2.75rem;              /* 44px — mínimo táctil */
+  padding: 0 var(--e-4);
+  border-radius: var(--radio-completo);
+  border: 1px solid var(--borde);
+  background: transparent;
+  color: var(--texto-suave);
+  font-family: inherit;
+  font-size: var(--paso--1);
+  letter-spacing: var(--track-amplio);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color var(--dur-rapido) var(--ease-salida),
+              color var(--dur-rapido) var(--ease-salida),
+              background-color var(--dur-rapido) var(--ease-salida);
+}
+.filtro:hover { border-color: var(--borde-fuerte); color: var(--texto); }
+.filtro[aria-pressed="true"] {
+  border-color: var(--acento);
+  background: color-mix(in srgb, var(--acento) 10%, transparent);
+  color: var(--acento-vivo);
+}
+.filtro__conteo {
+  font-size: var(--paso--2);
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+}
+
+/* Mampostería con columnas CSS: cada foto conserva su alto real y las
+   columnas se rellenan solas. `break-inside` es lo que evita que una foto
+   quede partida entre el pie de una columna y la cabeza de la siguiente. */
+.galeria__rejilla {
+  columns: 2 15rem;
+  column-gap: var(--e-4);
+  padding-bottom: var(--e-9);
+}
+@media (min-width: 1100px) { .galeria__rejilla { column-gap: var(--e-5); } }
+
+.galeria__celda {
+  display: block;
+  width: 100%;
+  break-inside: avoid;
+  margin-bottom: var(--e-4);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radio-2);
+  overflow: hidden;
+  background: var(--fondo-elevado);
+  cursor: zoom-in;
+  transition: transform var(--dur-normal) var(--ease-suave),
+              box-shadow var(--dur-normal) var(--ease-suave);
+}
+.galeria__celda:hover { transform: translateY(-3px); box-shadow: var(--sombra-2); }
+
+/* La celda deja de imponer proporción: manda el alto real de la foto. Por
+   eso el <img> va con height auto, al revés que en el resto del sitio. */
+.galeria__foto { display: block; }
+.galeria__foto img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: scale var(--dur-lento) var(--ease-suave);
+}
+.galeria__celda:hover .galeria__foto img { scale: 1.03; }
+
+/* ── El visor a pantalla completa ──────────────────────────────────────
+   Es un <dialog> nativo: el foco queda atrapado dentro, Escape cierra y el
+   fondo se vuelve inerte para el lector de pantalla, todo sin JS extra. */
+.visor {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: #0b0b0f;
+  color: #f4f2ee;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+}
+.visor::backdrop { background: #0b0b0f; }
+
+.visor__marco {
+  grid-column: 2;
+  margin: 0;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: var(--e-4);
+  height: 100%;
+  padding-block: var(--e-6);
+  min-height: 0;    /* sin esto el 1fr no deja encoger la foto y desborda */
+}
+.visor__foto { min-height: 0; display: grid; place-items: center; }
+.visor__picture,
+.visor__picture img { display: block; width: 100%; height: 100%; }
+/* `object-fit: contain` lo pone picture() con la opción `entera`: en el
+   visor la foto se ve completa, nunca recortada. */
+
+.visor__pie {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--e-4);
+  padding-inline: var(--e-4);
+  font-size: var(--paso--1);
+  color: #d8d2c8;
+  text-wrap: pretty;
+}
+.visor__conteo { font-variant-numeric: tabular-nums; color: #b9b2a6; flex: none; }
+
+.visor__cerrar {
+  position: absolute;
+  top: var(--e-4);
+  right: var(--e-4);
+  width: 2.75rem;
+  height: 2.75rem;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: var(--radio-completo);
+  background: #ffffff1a;
+  color: #f4f2ee;
+  cursor: pointer;
+  transition: background-color var(--dur-rapido) var(--ease-salida);
+}
+.visor__cerrar:hover { background: #ffffff33; }
+
+.visor__paso {
+  width: 3.5rem;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: #d8d2c8;
+  cursor: pointer;
+  transition: color var(--dur-rapido) var(--ease-salida);
+}
+.visor__paso:hover { color: #fff; }
+.visor__paso--antes { grid-column: 1; }
+.visor__paso--despues { grid-column: 3; }
+
+/* En celular las flechas laterales se comen el ancho de la foto: se ocultan
+   y se cambia de foto deslizando el dedo (lo maneja galeria-app.js). */
+@media (max-width: 640px) {
+  .visor { grid-template-columns: 1fr; }
+  .visor__paso { display: none; }
+  .visor__marco { grid-column: 1; padding-block: var(--e-7) var(--e-5); }
+}
+
+/* ── El botón que lleva al archivo desde la portada ─────────────────── */
+.mas-fotos {
+  display: grid;
+  justify-items: center;
+  gap: var(--e-4);
+  padding-top: var(--e-8);
+  margin-top: var(--e-7);
+  border-top: 1px solid var(--borde);
+  text-align: center;
+}
+.mas-fotos__nota { color: var(--texto-suave); max-width: var(--medida-estrecha); }

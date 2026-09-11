@@ -1,0 +1,248 @@
+<!doctype html>
+<!-- data-tema="claro": el sitio se ve SIEMPRE en claro, sin importar el modo
+     del sistema del visitante — decisión del cliente (el oscuro le cambiaba
+     el carácter al sitio). El mecanismo vive en tokens.css. -->
+<html lang="es" class="sin-js" data-tema="claro">
+<head>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2321332071740838');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2321332071740838&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+<!-- Microsoft Clarity -->
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ydt8cdywu6");
+</script>
+<!-- End Microsoft Clarity -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Accesorios en Cobre · Duchas y grifería artesanal</title>
+<meta name="description" content="Duchas, grifos, toalleros y accesorios en cobre, doblados y soldados a mano en Bucaramanga. Piezas para exterior e interior que envejecen con carácter.">
+<meta name="theme-color" content="#faf8f5">
+
+<link rel="icon" href="img/logo/rsilva-favicon.svg" type="image/svg+xml">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Accesorios en Cobre · Duchas y grifería artesanal">
+<meta property="og:description" content="Piezas en cobre hechas a mano, para exterior e interior. Hecho para durar.">
+<meta property="og:locale" content="es_CO">
+
+<!-- Las familias que tokens.css ya declara. Sin este <link> el navegador caía
+     en silencio a la fuente del sistema: el sitio entero se veía "de plantilla"
+     con el CSS correcto. Mismos pesos que usan los sitios hermanos. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="estilo.css">
+
+<!-- La foto del héroe la inyecta app.js (módulo, diferido): sin esta
+     precarga el navegador no la descubre hasta que el JS corre, y en 4G
+     esos segundos se notan. Mismo srcset/sizes que pinta picture(), en
+     avif, que es el formato que eligen todos los navegadores actuales. -->
+<link rel="preload" as="image" type="image/avif"
+      href="img/hero-ducha-1080.avif"
+      imagesrcset="img/hero-ducha-480.avif 480w, img/hero-ducha-720.avif 720w, img/hero-ducha-1080.avif 1080w, img/hero-ducha-1440.avif 1440w"
+      imagesizes="100vw"
+      fetchpriority="high">
+
+<!-- Sin JS el contenido revelado debe verse igual, no quedarse invisible -->
+<noscript><style>[data-revelar]{opacity:1 !important;translate:0 0 !important}</style></noscript>
+</head>
+<body>
+
+<a href="#principal" class="salto-contenido">Saltar al contenido</a>
+
+<header class="nav">
+  <!-- El wordmark va en línea, no como <img>: así hereda currentColor y
+       funciona igual en tema claro y oscuro, sin una petición extra. -->
+  <a href="#" class="nav__marca" aria-label="Accesorios en Cobre · inicio">
+    <svg class="wordmark" viewBox="0 0 206 64" width="206" height="64" aria-hidden="true" focusable="false">
+      <g fill="none" stroke="currentColor" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 52 V12 h10 a10 10 0 0 1 0 20 H10"/>
+        <path d="M20 32 C26 36.5 30.5 43.5 32.5 51.2"/>
+        <!-- S-I-L-V-A corrido para separarlo del punto: antes quedaba pegado a "R." -->
+        <g transform="translate(14,0)">
+          <path d="M60.72 14.28 A9.5 9.5 0 1 0 54 30.5 A10.5 10.5 0 1 1 46.58 48.42"/>
+          <path d="M78 12 V52"/>
+          <path d="M91.5 12 V40 A12 12 0 0 0 103.5 52 H112"/>
+          <path d="M124.5 12 L134.94 50.6 Q136 54.5 137.06 50.6 L147.5 12"/>
+          <path d="M159 52 L169.44 13.4 Q170.5 9.5 171.56 13.4 L182 52"/>
+          <path d="M162.25 40 H178.75"/>
+        </g>
+      </g>
+      <!-- El punto de "R.Silva": vive en el hueco entre la R y la S, a ras de
+           la línea base de los trazos, en el color de acento. -->
+      <circle cx="40.5" cy="51.8" r="3.5" fill="var(--acento, currentColor)"/>
+    </svg>
+  </a>
+
+  <button class="nav__menu" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+      <path d="M3 6h18M3 12h18M3 18h18"/>
+    </svg>
+  </button>
+
+  <nav class="nav__enlaces" id="menu" aria-label="Principal">
+    <a href="#duchas">Duchas</a>
+    <a href="#grifos">Grifos</a>
+    <a href="#toalleros">Toalleros</a>
+    <a href="#durabilidad">Durabilidad</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+</header>
+
+<main id="principal">
+
+  <!-- ══ HÉROE ══ -->
+  <section class="heroe">
+    <div class="heroe__fondo" id="heroe-fondo"></div>
+
+    <div class="heroe__contenido">
+      <h1 class="heroe__titulo">El cobre no se oxida:<br>madura.</h1>
+      <p class="heroe__bajada">
+        Duchas, grifería y accesorios doblados y soldados a mano, pieza por pieza.
+        Pensados para vivir a la intemperie y ganar carácter con los años.
+      </p>
+      <div class="acciones">
+        <a href="#duchas" class="boton boton--principal">Ver las piezas</a>
+      </div>
+    </div>
+
+    <svg class="heroe__flecha" width="20" height="28" viewBox="0 0 20 28" fill="none"
+         stroke="currentColor" stroke-width="1.3" aria-hidden="true">
+      <path d="M10 2v22M3 17l7 7 7-7"/>
+    </svg>
+  </section>
+
+  <!-- ══ PORTADAS DE COLECCIÓN ══
+       Tres paneles a pantalla completa, uno por categoría, como en los sitios
+       hermanos: la foto manda y el catálogo llega después. Se pintan desde
+       app.js con los datos de CATEGORIAS. -->
+  <section class="portadas" id="colecciones" aria-label="Colecciones"></section>
+
+  <!-- ══ CATÁLOGO ══ -->
+  <section class="seccion">
+    <div class="contenedor--ancho contenedor">
+      <p class="seccion__etiqueta" data-revelar>Serie artesanal</p>
+      <h2 class="seccion__titulo" data-revelar>Las piezas</h2>
+      <p class="seccion__bajada" data-revelar>
+        Cada modelo se fabrica por encargo. Las medidas son las de las fichas
+        técnicas del taller.
+      </p>
+      <div id="catalogo"></div>
+
+      <!-- El archivo completo del taller vive en su propia página: son 160
+           fotos y cargarlas aquí castigaría a quien solo viene a ver
+           precios. Desde el catálogo se ofrece, no se impone. -->
+      <div class="mas-fotos" data-revelar>
+        <p class="mas-fotos__nota">
+          Hay mucho más de lo que cabe en el catálogo: piezas ya instaladas en
+          patios y baños, el taller por dentro y las láminas con las medidas.
+        </p>
+        <a href="galeria.html" class="boton boton--principal">Ver todas las fotos</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ EL ARTESANO ══
+       Justo después del catálogo: primero las piezas, luego quién las hace. -->
+  <section class="seccion" id="artesano"></section>
+
+  <!-- ══ DURABILIDAD ══
+       El argumento #1 de la marca (14 años de intemperie verificables). -->
+  <section class="seccion" id="durabilidad"></section>
+
+  <!-- ══ CÓMO SE COMPRA (envíos · pagos · políticas) ══ -->
+  <section class="seccion" id="compra"></section>
+
+  <!-- ══ CONTACTO ══ -->
+  <section class="seccion" id="contacto">
+    <div class="contenedor">
+      <p class="seccion__etiqueta" data-revelar>Contacto</p>
+      <h2 class="seccion__titulo" data-revelar>Cuéntanos qué necesitas</h2>
+      <p class="seccion__bajada" data-revelar>
+        Las piezas se hacen por encargo. Escríbenos con la medida del espacio y
+        te decimos qué modelo encaja.
+      </p>
+      <div id="bloque-contacto" data-revelar></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pie">
+  <div class="contenedor">
+    <div class="pie__rejilla">
+      <div class="pie__marca">
+        <svg class="wordmark" viewBox="0 0 206 64" width="206" height="64" aria-hidden="true" focusable="false">
+          <g fill="none" stroke="currentColor" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 52 V12 h10 a10 10 0 0 1 0 20 H10"/>
+            <path d="M20 32 C26 36.5 30.5 43.5 32.5 51.2"/>
+            <!-- La misma separación R. | SILVA que llevan los de la nav. -->
+            <g transform="translate(14,0)">
+              <path d="M60.72 14.28 A9.5 9.5 0 1 0 54 30.5 A10.5 10.5 0 1 1 46.58 48.42"/>
+              <path d="M78 12 V52"/>
+              <path d="M91.5 12 V40 A12 12 0 0 0 103.5 52 H112"/>
+              <path d="M124.5 12 L134.94 50.6 Q136 54.5 137.06 50.6 L147.5 12"/>
+              <path d="M159 52 L169.44 13.4 Q170.5 9.5 171.56 13.4 L182 52"/>
+              <path d="M162.25 40 H178.75"/>
+            </g>
+          </g>
+          <!-- El punto de "R.Silva": vive en el hueco entre la R y la S, a ras de
+           la línea base de los trazos, en el color de acento. -->
+      <circle cx="40.5" cy="51.8" r="3.5" fill="var(--acento, currentColor)"/>
+        </svg>
+        <p class="pie__nombre" data-negocio="nombre">Accesorios en Cobre</p>
+      </div>
+      <div>
+        <p class="pie__titulo">Catálogo</p>
+        <ul class="pie__lista">
+          <li><a href="#duchas">Duchas</a></li>
+          <li><a href="#grifos">Grifos</a></li>
+          <li><a href="#toalleros">Toalleros</a></li>
+          <li><a href="#accesorios">Accesorios</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="pie__titulo">El taller</p>
+        <ul class="pie__lista">
+          <li><a href="galeria.html">Todas las fotos</a></li>
+          <li><a href="#durabilidad">A la intemperie</a></li>
+          <li><a href="#envios">Envíos</a></li>
+          <li><a href="#politicas">Políticas</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="pie__titulo">Contacto</p>
+        <ul class="pie__lista" id="pie-contacto"></ul>
+      </div>
+    </div>
+    <p class="pie__legal">
+      Hecho para durar. Creado para distinguir.
+    </p>
+  </div>
+</footer>
+
+<div class="wsp" id="wsp"></div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

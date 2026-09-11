@@ -1,0 +1,215 @@
+<!doctype html>
+<!-- data-tema="claro": tema claro siempre, igual que index.html. -->
+<html lang="es" class="sin-js" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pieza · Accesorios en Cobre</title>
+<meta name="description" content="Ficha técnica de la pieza en cobre: medidas, materiales y características.">
+<meta name="theme-color" content="#faf8f5">
+<link rel="icon" href="img/logo/rsilva-favicon.svg" type="image/svg+xml">
+<!-- Mismo <link> de fuentes que index.html (misma URL = misma caché). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="estilo.css">
+<noscript><style>[data-revelar]{opacity:1 !important;translate:0 0 !important}</style></noscript>
+</head>
+<body>
+
+<a href="#principal" class="salto-contenido">Saltar al contenido</a>
+
+<header class="nav desplazado">
+  <a href="index.html" class="nav__marca" aria-label="Accesorios en Cobre · inicio">
+    <svg class="wordmark" viewBox="0 0 206 64" width="206" height="64" aria-hidden="true" focusable="false">
+      <g fill="none" stroke="currentColor" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 52 V12 h10 a10 10 0 0 1 0 20 H10"/>
+        <path d="M20 32 C26 36.5 30.5 43.5 32.5 51.2"/>
+        <!-- S-I-L-V-A corrido para separarlo del punto: antes quedaba pegado a "R." -->
+        <g transform="translate(14,0)">
+          <path d="M60.72 14.28 A9.5 9.5 0 1 0 54 30.5 A10.5 10.5 0 1 1 46.58 48.42"/>
+          <path d="M78 12 V52"/>
+          <path d="M91.5 12 V40 A12 12 0 0 0 103.5 52 H112"/>
+          <path d="M124.5 12 L134.94 50.6 Q136 54.5 137.06 50.6 L147.5 12"/>
+          <path d="M159 52 L169.44 13.4 Q170.5 9.5 171.56 13.4 L182 52"/>
+          <path d="M162.25 40 H178.75"/>
+        </g>
+      </g>
+      <!-- El punto de "R.Silva", igual que en index.html. -->
+      <circle cx="40.5" cy="51.8" r="3.5" fill="var(--acento, currentColor)"/>
+    </svg>
+  </a>
+  <button class="nav__menu" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+      <path d="M3 6h18M3 12h18M3 18h18"/>
+    </svg>
+  </button>
+  <nav class="nav__enlaces" id="menu" aria-label="Principal">
+    <a href="index.html#duchas">Duchas</a>
+    <a href="index.html#grifos">Grifos</a>
+    <a href="index.html#toalleros">Toalleros</a>
+    <a href="index.html#contacto">Contacto</a>
+  </nav>
+</header>
+
+<main id="principal" class="contenedor">
+  <article class="ficha" id="ficha"></article>
+  <section class="sugeridos" id="sugeridos"></section>
+</main>
+
+<footer class="pie">
+  <div class="contenedor">
+    <p class="pie__nombre" data-negocio="nombre">Accesorios en Cobre</p>
+    <p class="pie__legal">Hecho para durar. Creado para distinguir.</p>
+  </div>
+</footer>
+
+<div class="wsp" id="wsp"></div>
+
+<script type="module">
+import { PRODUCTOS } from './catalogo.js';
+import { esPendiente } from './datos.js';
+import {
+  $, esc, valor, picture, precioBreve, precioLineas, notaPrecioTarjeta,
+  fotoBase, fotoNota, fotoFoco, fotoEntera, ctaWhatsapp, pintarWspFlotante,
+  activarNav, pintarNegocio,
+} from './vista.js';
+
+// El ancho real de la columna de foto (.ficha es 1.1fr/1fr desde 900px, en
+// un contenedor de hasta 76rem): sin esto un celular con dpr alto pedía la
+// variante de 1440px para una imagen que nunca se ve a más de ~620px.
+const SIZES_GALERIA = '(max-width: 900px) calc(100vw - 48px), 620px';
+const galeria = (base, alt, nota, foco, entera) => `
+  <figure class="galeria__figura">
+    <div class="galeria__principal">${picture(base, alt, { prioridad: true, sizes: SIZES_GALERIA, foco, entera })}</div>
+    ${nota ? `<figcaption class="pie-foto">${esc(nota)}</figcaption>` : ''}
+  </figure>`;
+
+const slug = new URLSearchParams(location.search).get('id');
+const p = PRODUCTOS.find((x) => x.slug === slug);
+const ficha = $('#ficha');
+
+if (!p) {
+  // Callejón sin salida no: se ofrece volver al catálogo.
+  ficha.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:var(--e-9) 0">
+    <h1 class="seccion__titulo">No encontramos esa pieza</h1>
+    <p class="seccion__bajada" style="margin-inline:auto">
+      Puede que el enlace esté incompleto.</p>
+    <a class="boton boton--principal" href="index.html">Ver todas las piezas</a>
+  </div>`;
+} else {
+  document.title = `${p.nombre} · Accesorios en Cobre`;
+  $('meta[name="description"]').content = p.resumen ?? '';
+
+  const filas = Object.entries(p.medidas ?? {})
+    .map(([k, v]) => `<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join('');
+
+  const extras = [
+    ['Material', p.material],
+    ['Válvula', p.valvula],
+    ['Montaje', p.montaje],
+    ['Incluye', p.incluye],
+  ].filter(([, v]) => v !== undefined)
+   .map(([k, v]) => `<tr><th scope="row">${k}</th><td>${valor(v)}</td></tr>`).join('');
+
+  const aviso = p.porConfirmar
+    ? `<p class="pendiente" style="margin-bottom:var(--e-4)">Por confirmar: ${esc(p.porConfirmar)}</p>` : '';
+  const fotoPorBase = (base) => p.fotos.find((f) => fotoBase(f) === base) ?? '';
+
+  const miniaturas = p.fotos.length > 1
+    ? `<div class="galeria__miniaturas">${p.fotos.map((f, i) => `
+        <button class="galeria__miniatura" data-foto="${fotoBase(f)}" aria-current="${i === 0}"
+                aria-label="Ver foto ${i + 1} de ${p.fotos.length}">
+          <img src="img/${fotoBase(f)}-480.jpg" alt="" width="72" height="72" loading="lazy">
+        </button>`).join('')}</div>` : '';
+
+  // Versiones, sobrecostos y regla de diámetro. No se funden en una cifra:
+  // $850.000 y $950.000 son dos piezas distintas, no un promedio.
+  const lineas = precioLineas(p);
+  const detallePrecio = lineas.length
+    ? `<ul class="precio__lineas">${lineas.map(([k, v]) =>
+        `<li><span>${esc(k)}</span><b>${esc(v)}</b></li>`).join('')}</ul>` : '';
+
+  ficha.innerHTML = `
+    <div>
+      <div id="galeria">
+        ${galeria(p.fotoPrincipal, `${p.nombre} en cobre`,
+          fotoNota(fotoPorBase(p.fotoPrincipal)), fotoFoco(fotoPorBase(p.fotoPrincipal)),
+          fotoEntera(fotoPorBase(p.fotoPrincipal)))}
+      </div>
+      ${miniaturas}
+    </div>
+
+    <div data-revelar>
+      <p class="seccion__etiqueta">${esc(p.categoria)}</p>
+      <h1 class="seccion__titulo" style="font-size:var(--paso-3)">${esc(p.nombre)}</h1>
+      <p class="seccion__bajada">${esc(p.descripcion)}</p>
+      ${aviso}
+
+      <div class="precio-bloque">
+        ${precioBreve(p.precio, { grande: true })}
+        ${detallePrecio}
+      </div>
+
+      ${ctaWhatsapp('Pedir por WhatsApp',
+        `Hola, me interesa la pieza "${p.nombre}". ¿Me cuentas precio y disponibilidad?`)}
+      <p class="nota">Se fabrica por encargo.</p>
+
+      <table class="especificaciones">
+        <caption class="solo-lectores">Ficha técnica de ${esc(p.nombre)}</caption>
+        <tbody>${filas}${extras}</tbody>
+      </table>
+    </div>`;
+
+  // Galería: cambiar la foto principal al tocar una miniatura
+  ficha.addEventListener('click', (e) => {
+    const b = e.target.closest('.galeria__miniatura');
+    if (!b) return;
+    const f = fotoPorBase(b.dataset.foto);
+    $('#galeria').innerHTML = galeria(b.dataset.foto, `${p.nombre} en cobre`, fotoNota(f), fotoFoco(f), fotoEntera(f));
+    for (const otro of ficha.querySelectorAll('.galeria__miniatura')) {
+      otro.setAttribute('aria-current', String(otro === b));
+    }
+  });
+
+  // Sugeridos: piezas de la misma categoría; si no hay suficientes, se
+  // completa con el resto del catálogo para siempre mostrar algo.
+  const sugeridos = $('#sugeridos');
+  if (sugeridos) {
+    const mismaCategoria = PRODUCTOS.filter((x) => x !== p && x.categoria === p.categoria);
+    const resto = PRODUCTOS.filter((x) => x !== p && x.categoria !== p.categoria);
+    const elegidas = [...mismaCategoria, ...resto].slice(0, 3);
+
+    if (elegidas.length) {
+      const tarjetas = elegidas.map((s) => {
+        const medida = Object.entries(s.medidas ?? {})[0];
+        return `
+          <a class="pieza" href="producto.html?id=${s.slug}">
+            ${picture(s.fotoPrincipal, `${s.nombre} en cobre`, { clase: 'pieza__foto' })}
+            <div class="pieza__cuerpo">
+              <h3 class="pieza__nombre">${esc(s.nombre)}</h3>
+              <p class="pieza__medida">${medida ? esc(`${medida[0]}: ${medida[1]}`) : ''}</p>
+              ${precioBreve(s.precio)}
+              ${notaPrecioTarjeta(s)}
+            </div>
+          </a>`;
+      }).join('');
+
+      sugeridos.innerHTML = `
+        <h2 class="seccion__titulo" style="font-size:var(--paso-1)">También te puede interesar</h2>
+        <div class="sugeridos__rejilla">${tarjetas}</div>`;
+    }
+  }
+}
+
+document.documentElement.classList.remove('sin-js');
+if (new URLSearchParams(location.search).has('limpio')) document.body.classList.add('limpio');
+
+pintarWspFlotante('index.html#contacto');
+pintarNegocio();
+activarNav();
+for (const el of document.querySelectorAll('[data-revelar]')) el.classList.add('visible');
+</script>
+</body>
+</html>
