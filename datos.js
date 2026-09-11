@@ -52,15 +52,21 @@ export const sinDatoReal = (v) => esPendiente(v) || esEjemplo(v);
    NEGOCIO
    ═══════════════════════════════════════════════════════════ */
 export const NEGOCIO = {
-  nombre: 'Accesorios en Cobre',
+  // Sitio hermano de accesoriosencobre.co, dedicado SOLO a las duchas. La
+  // marca y el taller son los mismos; cambia el alcance, no la identidad.
+  nombre: 'Duchas en Cobre',
   marcaGrafica: 'R.SILVA',                             // el wordmark de img/logo/
   lema: 'Hecho para durar. Creado para distinguir.',   // tomado de la ficha técnica
   // Redactada únicamente a partir de la historia de marca de Rafael (ver ARTESANO.bio).
   descripcion:
     'Taller de cobre en Bucaramanga. Desde hace quince años, Rafael Enrique Silva ' +
-    'Gómez fabrica duchas, griferías y accesorios de forma completamente ' +
-    'artesanal, cuidando cada detalle del proceso para lograr acabados ' +
-    'impecables y piezas pensadas para durar por generaciones.',
+    'Gómez fabrica duchas de forma completamente artesanal, cuidando cada ' +
+    'detalle del proceso para lograr acabados impecables y piezas pensadas ' +
+    'para durar por generaciones.',
+
+  // El catálogo completo (grifería, toalleros y accesorios) vive en el sitio
+  // matriz. Este sitio enlaza allá una sola vez, con intención, no redirige.
+  sitioCompleto: { url: 'https://accesoriosencobre.co', nombre: 'Accesorios en Cobre' },
 
   // — Contacto —
   // Solo los canales reales. El teléfono fijo y la dirección se retiraron a
@@ -78,7 +84,19 @@ export const NEGOCIO = {
   mostrarRedes: true,
 
   // — Dominio —
-  dominio: 'accesoriosencobre.co',   // Spaceship + GitHub Pages; ver CNAME
+  dominio: 'duchasencobre.co',   // GitHub Pages; ver CNAME
+};
+
+/* ═══════════════════════════════════════════════════════════
+   ALCANCE DEL SITIO
+   `catalogo.js` y `galeria.js` son los mismos del sitio matriz
+   (así una pieza nueva se copia tal cual). Lo que este sitio
+   muestra se decide aquí, al pintar, no borrando entradas.
+   ═══════════════════════════════════════════════════════════ */
+export const ALCANCE = {
+  categorias: ['duchas'],
+  // "piezas" queda fuera: son en su mayoría componentes de grifería y toalleros.
+  gruposGaleria: ['duchas', 'taller', 'fichas'],
 };
 
 /* ═══════════════════════════════════════════════════════════

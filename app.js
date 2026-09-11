@@ -7,10 +7,16 @@
  */
 
 import {
-  NEGOCIO, ARTESANO, DURABILIDAD, ENVIOS, PAGOS, POLITICAS, CATEGORIAS,
+  NEGOCIO, ARTESANO, DURABILIDAD, ENVIOS, PAGOS, POLITICAS, ALCANCE,
   COBRE, esPendiente,
 } from './datos.js';
-import { PRODUCTOS, AMBIENTES } from './catalogo.js';
+import * as DATOS from './datos.js';
+import { PRODUCTOS as TODOS_LOS_PRODUCTOS, AMBIENTES } from './catalogo.js';
+
+// Este sitio solo muestra las duchas (ver ALCANCE en datos.js). El catálogo
+// completo sigue intacto en catalogo.js; aquí se recorta al pintar.
+const CATEGORIAS = DATOS.CATEGORIAS.filter((c) => ALCANCE.categorias.includes(c.slug));
+const PRODUCTOS = TODOS_LOS_PRODUCTOS.filter((p) => ALCANCE.categorias.includes(p.categoria));
 import {
   $, $$, esc, aviso, valor, fila, picture, precioBreve, notaPrecioTarjeta,
   ctaWhatsapp, pintarWspFlotante, activarNav, pintarNegocio,

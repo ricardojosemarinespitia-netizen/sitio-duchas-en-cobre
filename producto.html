@@ -4,8 +4,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Pieza · Accesorios en Cobre</title>
-<meta name="description" content="Ficha técnica de la pieza en cobre: medidas, materiales y características.">
+<title>Pieza · Duchas en Cobre</title>
+<meta name="description" content="Ficha técnica de la ducha en cobre: medidas, materiales y características.">
 <meta name="theme-color" content="#faf8f5">
 <link rel="icon" href="img/logo/rsilva-favicon.svg" type="image/svg+xml">
 <!-- Mismo <link> de fuentes que index.html (misma URL = misma caché). -->
@@ -21,7 +21,7 @@
 <a href="#principal" class="salto-contenido">Saltar al contenido</a>
 
 <header class="nav desplazado">
-  <a href="index.html" class="nav__marca" aria-label="Accesorios en Cobre · inicio">
+  <a href="index.html" class="nav__marca" aria-label="Duchas en Cobre · inicio">
     <svg class="wordmark" viewBox="0 0 206 64" width="206" height="64" aria-hidden="true" focusable="false">
       <g fill="none" stroke="currentColor" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M10 52 V12 h10 a10 10 0 0 1 0 20 H10"/>
@@ -47,8 +47,7 @@
   </button>
   <nav class="nav__enlaces" id="menu" aria-label="Principal">
     <a href="index.html#duchas">Duchas</a>
-    <a href="index.html#grifos">Grifos</a>
-    <a href="index.html#toalleros">Toalleros</a>
+    <a href="index.html#durabilidad">Durabilidad</a>
     <a href="index.html#contacto">Contacto</a>
   </nav>
 </header>
@@ -60,7 +59,7 @@
 
 <footer class="pie">
   <div class="contenedor">
-    <p class="pie__nombre" data-negocio="nombre">Accesorios en Cobre</p>
+    <p class="pie__nombre" data-negocio="nombre">Duchas en Cobre</p>
     <p class="pie__legal">Hecho para durar. Creado para distinguir.</p>
   </div>
 </footer>
@@ -68,8 +67,12 @@
 <div class="wsp" id="wsp"></div>
 
 <script type="module">
-import { PRODUCTOS } from './catalogo.js';
-import { esPendiente } from './datos.js';
+import { PRODUCTOS as TODOS_LOS_PRODUCTOS } from './catalogo.js';
+import { esPendiente, ALCANCE } from './datos.js';
+
+// Este sitio solo muestra las duchas (ver ALCANCE en datos.js): una pieza de
+// otra categoría se trata como no encontrada, con salida al catálogo.
+const PRODUCTOS = TODOS_LOS_PRODUCTOS.filter((x) => ALCANCE.categorias.includes(x.categoria));
 import {
   $, esc, valor, picture, precioBreve, precioLineas, notaPrecioTarjeta,
   fotoBase, fotoNota, fotoFoco, fotoEntera, ctaWhatsapp, pintarWspFlotante,
@@ -99,7 +102,7 @@ if (!p) {
     <a class="boton boton--principal" href="index.html">Ver todas las piezas</a>
   </div>`;
 } else {
-  document.title = `${p.nombre} · Accesorios en Cobre`;
+  document.title = `${p.nombre} · Duchas en Cobre`;
   $('meta[name="description"]').content = p.resumen ?? '';
 
   const filas = Object.entries(p.medidas ?? {})

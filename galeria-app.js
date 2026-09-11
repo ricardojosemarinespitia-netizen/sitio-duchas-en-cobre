@@ -8,7 +8,13 @@
  * proporción real.
  */
 
-import { GALERIA, GRUPOS_GALERIA } from './galeria.js';
+import { GALERIA as TODA_LA_GALERIA, GRUPOS_GALERIA as TODOS_LOS_GRUPOS } from './galeria.js';
+import { ALCANCE } from './datos.js';
+
+// Este sitio solo enseña duchas, taller y láminas (ver ALCANCE en datos.js).
+// El archivo completo sigue en galeria.js; aquí se recorta al pintar.
+const GRUPOS_GALERIA = TODOS_LOS_GRUPOS.filter((g) => ALCANCE.gruposGaleria.includes(g.slug));
+const GALERIA = TODA_LA_GALERIA.filter((f) => ALCANCE.gruposGaleria.includes(f.grupo));
 import {
   $, $$, esc, picture, pintarWspFlotante, activarNav, pintarNegocio,
 } from './vista.js';

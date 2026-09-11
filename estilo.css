@@ -1376,6 +1376,9 @@ picture { position: relative; }
 }
 .pie__lista a:hover { color: var(--texto); }
 .pie__lista li { display: grid; }
+/* El enlace al sitio hermano lleva su dominio debajo, en pequeño. */
+.pie__lista a:has(.pie__externo) { flex-direction: column; align-items: flex-start; justify-content: center; }
+.pie__externo { font-size: var(--paso--2); opacity: 0.8; }
 .pie__legal { margin-top: var(--e-7); padding-top: var(--e-5); border-top: 1px solid var(--borde); font-size: var(--paso--2); color: var(--texto-suave); }
 
 /* En el pie el wordmark va acompañado del nombre legal escrito: RSILVA es la
@@ -1733,3 +1736,70 @@ picture { position: relative; }
   text-align: center;
 }
 .mas-fotos__nota { color: var(--texto-suave); max-width: var(--medida-estrecha); }
+
+/* ── Sitio hermano (solo en duchasencobre.co) ────────────────────────────
+   Una tarjeta ancha, a la altura de las piezas, que manda al catálogo
+   completo de accesoriosencobre.co. Mismo cobre, mismo tono: se lee como
+   una puerta entre dos salas del mismo taller, no como un aviso. */
+.hermano {
+  margin-top: var(--e-9);
+  padding: var(--e-7) var(--e-6);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-3);
+  background:
+    radial-gradient(120% 140% at 0% 0%, var(--acento-tenue), transparent 55%),
+    var(--fondo-elevado);
+  display: grid;
+  gap: var(--e-3);
+  justify-items: start;
+}
+.hermano .seccion__etiqueta { margin-bottom: 0; }
+.hermano__titulo {
+  font-family: var(--fuente-display);
+  font-size: var(--paso-3);
+  font-weight: 300;
+  line-height: var(--interlineado-apretado);
+  letter-spacing: var(--track-apretado);
+}
+.hermano__nota { color: var(--texto-suave); max-width: var(--medida); }
+.hermano__enlace {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--e-2) var(--e-3);
+  min-height: 3rem;                 /* táctil ≥ 44px */
+  margin-top: var(--e-3);
+  padding-block: var(--e-2);
+  color: var(--acento);
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid var(--acento-tenue);
+  transition: color var(--dur-rapido) var(--ease-salida),
+              border-color var(--dur-rapido) var(--ease-salida);
+}
+.hermano__enlace svg {
+  transition: transform var(--dur-rapido) var(--ease-salida);
+}
+.hermano__enlace:hover,
+.hermano__enlace:focus-visible { color: var(--acento-vivo); border-color: var(--acento); }
+.hermano__enlace:hover svg,
+.hermano__enlace:focus-visible svg { transform: translateX(4px); }
+.hermano__dominio {
+  font-size: var(--paso--2);
+  letter-spacing: var(--track-amplio);
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+@media (min-width: 900px) {
+  .hermano {
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "etiqueta etiqueta" "titulo enlace" "nota enlace";
+    align-items: center;
+    column-gap: var(--e-8);
+    padding: var(--e-8);
+  }
+  .hermano .seccion__etiqueta { grid-area: etiqueta; }
+  .hermano__titulo { grid-area: titulo; }
+  .hermano__nota { grid-area: nota; }
+  .hermano__enlace { grid-area: enlace; margin-top: 0; justify-self: end; }
+}
