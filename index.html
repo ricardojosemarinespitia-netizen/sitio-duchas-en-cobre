@@ -147,6 +147,15 @@ src="https://www.facebook.com/tr?id=2321332071740838&ev=PageView&noscript=1"
       </p>
       <div id="catalogo"></div>
 
+      <!-- ══ SITIO HERMANO ══
+           Este dominio es solo de duchas. Grifería, toalleros y accesorios
+           salen del mismo taller y viven en accesoriosencobre.co: se ofrece
+           el camino una vez, justo después de las duchas y antes del archivo
+           de fotos, sin redirigir nada. Se pinta desde app.js (pintarHermano)
+           para que sus fotos pasen por el mismo pipeline picture() que el
+           resto del catálogo. -->
+      <div id="hermano"></div>
+
       <!-- El archivo completo del taller vive en su propia página: son 160
            fotos y cargarlas aquí castigaría a quien solo viene a ver
            precios. Desde el catálogo se ofrece, no se impone. -->
@@ -157,28 +166,6 @@ src="https://www.facebook.com/tr?id=2321332071740838&ev=PageView&noscript=1"
         </p>
         <a href="galeria.html" class="boton boton--principal">Ver todas las fotos</a>
       </div>
-
-      <!-- ══ SITIO HERMANO ══
-           Este dominio es solo de duchas. Grifería, toalleros y accesorios
-           salen del mismo taller y viven en accesoriosencobre.co: se ofrece
-           el camino una vez, aquí, sin redirigir nada. -->
-      <aside class="hermano" data-revelar aria-labelledby="hermano-titulo">
-        <p class="seccion__etiqueta">Del mismo taller</p>
-        <h2 class="hermano__titulo" id="hermano-titulo">¿Buscas grifería o toalleros?</h2>
-        <p class="hermano__nota">
-          Aquí solo viven las duchas. Los grifos de muro y de cubierta, los
-          toalleros y los accesorios de cobre están en el catálogo completo de
-          Accesorios en Cobre, hechos por las mismas manos.
-        </p>
-        <a href="https://accesoriosencobre.co" class="hermano__enlace">
-          Conoce el catálogo completo
-          <span class="hermano__dominio">accesoriosencobre.co</span>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor"
-               stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M3 10h13M11 5l5 5-5 5"/>
-          </svg>
-        </a>
-      </aside>
     </div>
   </section>
 

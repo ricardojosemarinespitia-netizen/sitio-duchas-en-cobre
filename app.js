@@ -251,6 +251,68 @@ function pintarCatalogo() {
   }).join('');
 }
 
+/* ── Sitio hermano: grifería y toalleros ────────────────────────────────
+   Este dominio muestra solo duchas (ALCANCE), pero el taller hace mucho
+   más. Antes era una tarjeta de texto al final de la página; ahora es un
+   héroe secundario: tres fotos reales de grifos y toalleros (las mismas
+   bases que usa el catálogo completo en catalogo.js) y un botón de verdad
+   hacia accesoriosencobre.co. Va entre las duchas y el archivo de fotos:
+   quien terminó de ver las piezas y no encontró lo suyo, lo encuentra aquí.
+   Los `sizes` son los del collage real (ver .hermano__fotos en estilo.css),
+   no 100vw: la foto grande ocupa ~60% del collage y las chicas ~40%. */
+const HERMANO_FOTOS = [
+  { base: 'cuello-de-cisne-04-agua', nombre: 'Grifo Cuello de Cisne',
+    alt: 'Grifo de cobre cuello de cisne dejando caer agua sobre un lavamanos de piedra.',
+    ratio: '4 / 5', sizes: '(max-width: 899px) calc(60vw - 32px), 19rem' },
+  { base: 'toallero-ovalado-04-bodegon', nombre: 'Toallero Ovalado',
+    alt: 'Cuatro toalleros ovalados de cobre apilados sobre fondo oscuro.',
+    ratio: '1 / 1', sizes: '(max-width: 899px) calc(40vw - 32px), 12rem' },
+  { base: 'grifo-de-muro-05-limpia', nombre: 'Grifo de Muro',
+    alt: 'Grifo de muro en cobre con caño curvo sobre un lavamanos ovalado de piedra.',
+    ratio: '1 / 1', sizes: '(max-width: 899px) calc(40vw - 32px), 12rem',
+    foco: '50% 20%' },
+];
+
+function pintarHermano() {
+  const nodo = $('#hermano');
+  if (!nodo) return;
+  const sitio = NEGOCIO.sitioCompleto;
+  if (!sitio?.url) return;
+  const dominio = sitio.url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+
+  const fotos = HERMANO_FOTOS.map((f, i) => `
+    <figure class="hermano__foto hermano__foto--${i + 1}" data-revelar style="--retardo:${120 + i * 90}ms">
+      ${picture(f.base, f.alt, { ratio: f.ratio, sizes: f.sizes, foco: f.foco ?? null })}
+      <figcaption class="hermano__pie">${esc(f.nombre)}</figcaption>
+    </figure>`).join('');
+
+  nodo.innerHTML = `
+    <aside class="hermano" aria-labelledby="hermano-titulo">
+      <div class="hermano__texto">
+        <p class="seccion__etiqueta" data-revelar>Del mismo taller</p>
+        <h2 class="hermano__titulo" id="hermano-titulo" data-revelar style="--retardo:70ms">
+          ¿Buscas grifería o toalleros?
+        </h2>
+        <p class="hermano__nota" data-revelar style="--retardo:140ms">
+          Aquí solo viven las duchas. Los grifos de muro y de cubierta, los
+          toalleros y los accesorios de cobre están en el catálogo completo de
+          ${esc(sitio.nombre)}, hechos por las mismas manos.
+        </p>
+        <div class="hermano__accion" data-revelar style="--retardo:210ms">
+          <a href="${esc(sitio.url)}" class="boton boton--principal hermano__boton">
+            Ver grifería y toalleros
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 10h13M11 5l5 5-5 5"/>
+            </svg>
+          </a>
+          <span class="hermano__dominio">${esc(dominio)}</span>
+        </div>
+      </div>
+      <div class="hermano__fotos">${fotos}</div>
+    </aside>`;
+}
+
 /* ── Secciones de contenido ──────────────────────────────────────────── */
 
 /** El recuadro que ocupa el lugar de una sección todavía sin información. */
@@ -770,6 +832,7 @@ if (new URLSearchParams(location.search).has('limpio')) {
 pintarHeroe();
 pintarPortadas();
 pintarCatalogo();
+pintarHermano();
 pintarArtesano();
 pintarDurabilidad();
 pintarCompra();
